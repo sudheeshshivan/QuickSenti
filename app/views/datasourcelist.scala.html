@@ -1,0 +1,36 @@
+@import controllers._
+@(adminheader : Html, dataSourceList : List[ConfigurationInfoList])
+	@adminheader
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">Data Source List</div>
+        		<div class="panel-body">
+        			<ul class="list-group">
+        			
+        			</ul>
+        			<table class="table table-striped table-border">
+        				<tr>
+        					<th>Data Source</th>
+        					<th>Current Status</th>
+        					<th></th> 
+        					<th></th>      				
+        				</tr>
+	        			@dataSourceList.map{ config =>
+        				<tr>	        				
+	        				<td><a href='@routes.AdminArea.dataSourceDetailedView(GeneralFunctions.getMD5Hash(config.dsid.toString))'> @config.accountTitle </a> </td>
+	        				<td>@if(config.processid > 0){ <img src="@routes.Assets.at("images/running_icon.png")" width="32" height="32" /> } else {<img src="@routes.Assets.at("images/stop_icon.png")" width="32" height="32" /> }</td>
+	        				<td><a href="@routes.AdminArea.updateStreamingStatus(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary right">  @if(config.processid > 0){Stop Streaming} else {Start Streaming} </a></td>
+	        				<td><a href="@routes.AdminArea.deleteDataSource(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary right">  Delete </a></td>
+        				</tr>
+	        			}        					
+        			</table>
+        		
+        		</div>
+        		
+        	</div>
+        
+        
+        </div>
+       
+    </body>
+</html>

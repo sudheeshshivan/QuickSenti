@@ -1,0 +1,36 @@
+@(adminheader : Html,uploadForm : Form[UploadViewInfo], serviceList : Seq[(String,String)], reportViewList :  List[ReportViewList] )
+	@adminheader
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">Upload view</div>
+        		<div class="panel-body">        
+                    <div class="col col-sm-6">
+                    @helper.form(action = routes.WebServices.doUploadView, 'enctype -> "multipart/form-data"){
+                        @helper.select(field = uploadForm("service") , options = serviceList, '_showConstraints -> false, 'required -> "required", '_label -> "Select Service"  )
+                        @helper.inputText(uploadForm("linkTitle") , '_showConstraints -> false, 'required -> "required", '_label -> "Link Title" )
+                        @helper.inputFile(uploadForm("viewFile") , '_showConstraints -> false, 'required -> "required", '_label -> "Select HTML" )
+                        <input type="submit" value="Submit" class="btn btn-primary">
+                    }
+                    </div>        		
+                    <div class="col col-sm-6">
+                        <table class="table table-hover">      
+                            <tr class="info">
+                                <th>Service Name</th>
+                                <th>Link Title</th>
+                                <th></th>
+                            </tr>      
+                            @reportViewList.map{ reportView =>
+                                <tr>
+                                    <td>@reportView.serviceName</td>
+                                    <td>@reportView.linkTitle</td>
+                                    <td><a class="btn btn-danger" href="#@GeneralFunctions.getMD5Hash(reportView.vid.toString())">X</a></td>
+                                <tr>
+                            }                             
+                        
+                        </table>
+                    </div>
+        		</div>        		
+        	</div>
+        </div>       
+    </body>
+</html>

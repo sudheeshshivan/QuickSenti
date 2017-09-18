@@ -1,0 +1,33 @@
+@(adminheader : Html, scheduleAnalysisForm : Form[ScheduleAnalysisInfo], dataSourceList : Seq[(String,String)], AnalysisScheduleList : List[AnalysisSchedule])
+	@adminheader
+
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">Schedule Analysis</div>
+        		<div class="panel-body">   
+              <div class="col col-sm-6">
+              @helper.form(action = routes.AdminArea.doScheduleAnalysis){
+              Select Data Source:
+                @helper.select(field = scheduleAnalysisForm("dsid") , options = dataSourceList
+, '_showConstraints -> false, 'required->"required", '_label -> "Data Source", 'class -> "form-control small-6"
+                 )
+                Schedule Time :
+               <!--helper.inputText(scheduleAnalysisForm("scheduleHr"), '_showConstraints -> false, 'required -> "required", 'size -> 5)      
+               helper.inputText(scheduleAnalysisForm("scheduleMin"), '_showConstraints -> false, 'required -> "required", 'size -> 5)      -->
+               Hrs : <input type="text" name="scheduleHr" size="2" class="form-control small-2" required>
+               Min : <input type="text" name="scheduleMin" size="2" class="form-control small-2" required><br>
+               <input type="submit" value="Submit" class="btn btn-primary">
+              }
+              </div> 
+              <div class="col col-sm-6">
+                <span class="list-group">
+                @AnalysisScheduleList.map{ schedule =>
+                  <span class="list-group-item"> <a href="@routes.AdminArea.deleteAnalysisSchedule(GeneralFunctions.getMD5Hash(schedule.dsid.toString))" class="btn btn-danger">x</a> @schedule.accountTitle  </span>
+              }
+                </span>
+              </div>
+        		</div>
+        	</div>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,59 @@
+@(adminheader : Html, graphToPageForm : Form[GraphToPage], reportPageList : Seq[(String,String)], chartList : List[ChartList])
+	@adminheader    
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">Create New Report Page</div>
+        		<div class="panel-body">  
+              <div class="col col-sm-6 remove-dt">
+                @helper.form(action = routes.WebServices.doAddGraphToPage){
+                <div class="input-group">
+                  <div class="input-group-addon">Select Page :</div>
+                  @helper.select(field = graphToPageForm("page"), options = reportPageList, '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null )                  
+                </div>
+                <div class="wrapper"></div>
+                <ul class="list-group" id="newList">
+                  <li class="list-group-item active">Selected Charts </li>
+                </ul>
+                <input type="submit" class="btn btn-primary" value="Submit">
+                }
+              </div>
+              <div class="col col-sm-6">
+                <ul class="list-group" id="originalList">
+                  <li class="list-group-item active">Select Chart From Here</li>
+                  @chartList.map{ singleChart =>
+                  <li class="list-group-item" id="chart@singleChart.chtid.toString">
+                    <a id="exchangeButton@singleChart.chtid.toString" href="#" class="btn btn-success" onclick="addItemToList('@singleChart.chtid.toString');" >
+                    <span class="glyphicon glyphicon-plus"></span></a>
+                    <input type="hidden" name="charts[]" value="@singleChart.chtid.toString">
+                    @singleChart.chartname </li>
+                  }              
+                </ul>
+              </div>
+        		</div>
+        	</div>
+        </div>
+    </body>
+    <script type="text/javascript">
+    function addItemToList(hashId){
+      var newList = document.getElementById("newList");
+      var elementId = "chart"+hashId;
+      var currentItem = document.getElementById(elementId);
+      var currentButton = document.getElementById("exchangeButton"+hashId);
+      currentButton.setAttribute("onclick","removeItemFromList('"+hashId+"');")
+      currentButton.innerHTML = '<span class="glyphicon glyphicon-minus"></span>';
+      currentButton.setAttribute("class","btn btn-danger");
+      newList.appendChild(currentItem);
+    }
+
+    function removeItemFromList(hashId){
+      var originalList = document.getElementById("originalList");
+      var elementId = "chart"+hashId;
+      var currentItem = document.getElementById(elementId);
+      var currentButton = document.getElementById("exchangeButton"+hashId);
+      currentButton.setAttribute("onclick","addItemToList('"+hashId+"');")
+      currentButton.innerHTML = '<span class="glyphicon glyphicon-plus"></span>';
+      currentButton.setAttribute("class","btn btn-success");
+      originalList.appendChild(currentItem);   
+    }
+    </script>
+</html>

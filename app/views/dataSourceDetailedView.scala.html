@@ -1,0 +1,42 @@
+@import controllers._
+@(adminheader : Html, dataSourceList : List[ConfigurationInfoList])
+	@adminheader
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading"><strong>Data Source Detailed View</strong></div>
+        		<div class="panel-body">
+        			<strong>
+        			<ul class="list-group col col-sm-3">  	
+        				<li class="list-group-item  list-group-item-info">DataSource Type</li>
+        				<li class="list-group-item  list-group-item-info">DataSource Title</li>
+        				<li class="list-group-item  list-group-item-info">Access Key</li>
+        				<li class="list-group-item  list-group-item-info">Access Secret</li>
+        				<li class="list-group-item  list-group-item-info">Consumer Key</li>
+        				<li class="list-group-item  list-group-item-info">Consumer Secret</li>
+        				<li class="list-group-item  list-group-item-info">Keywords</li>
+        				<li class="list-group-item  list-group-item-info">Current Status</li>
+        			</ul>
+        			</strong>
+        			<ul class="list-group col col-sm-9">
+					@dataSourceList.map{ config =>        				
+        				<li class="list-group-item">@config.accountType</li>
+        				<li class="list-group-item">@config.accountTitle</li>
+        				<li class="list-group-item">@config.accessKey</li>
+        				<li class="list-group-item">@config.accessSecret</li>
+        				<li class="list-group-item">@config.consumerKey</li>
+        				<li class="list-group-item">@config.consumerSecret</li>
+        				<li class="list-group-item">@config.keywords</li>
+        				<li class="list-group-item">@if(config.processid > 0){ <img src="@routes.Assets.at("images/running_icon.png")" width="28" height="23" /> } else {<img src="@routes.Assets.at("images/stop_icon.png")" width="24" height="23" /> }</li>
+        			</ul>
+        			<a href="@routes.AdminArea.editDataSource(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary">Edit</a>
+        			<a href="@routes.AdminArea.dataSourceList" class="btn btn-primary right"> <span class="glyphicon glyphicon-arrow-left"></span>Back</a>
+        			<a href="@routes.AdminArea.updateStreamingStatus(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary right">  @if(config.processid > 0){Stop Streaming} else {Start Streaming} </a>
+        			}
+        		</div>
+        		
+        	</div>
+        
+        </div>
+       
+    </body>
+</html>

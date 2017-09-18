@@ -1,0 +1,6 @@
+@(reportList : List[(String,Int)])
+
+							<span class="list-group-item active">Choose Reports</span>
+							@reportList.map{ report =>
+							<span class="list-group-item" id="report@GeneralFunctions.getMD5Hash(report._2.toString())"><a href="#" id="exchangeButton@GeneralFunctions.getMD5Hash(report._2.toString())" class="btn btn-success" onclick="addItemToList('@GeneralFunctions.getMD5Hash(report._2.toString())');"><span class="glyphicon glyphicon-plus"></span></a> @report._1 </span>
+							}

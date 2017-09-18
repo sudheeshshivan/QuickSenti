@@ -1,0 +1,39 @@
+@(adminheader : Html, userForm : Form[UserInfo], groupList : Seq[(String,String)], userList : List[User])
+	@adminheader
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">New User Registration</div>
+        		<div class="panel-body">  
+                    <div class="col col-sm-6">
+                        @helper.form(action = routes.UserManager.createNewUser){                       
+                            @helper.select(field = userForm("grpid") , options = groupList
+    , '_showConstraints -> false, 'required->"required", '_label -> "User Group")
+                            @helper.inputText(userForm("username"), '_label -> "Username", '_showConstraints -> false, 'required -> "required")
+                            @helper.inputPassword(userForm("password.main"), '_label -> "Password", '_showConstraints -> false, 'required -> "required") 
+                            @helper.inputPassword(userForm("password.confirm"),'_error -> userForm.error("password"), '_label -> "Confirm Password", '_showConstraints -> false, 'required -> "required")
+                            @helper.inputText(userForm("email"), '_label -> "Email", '_showConstraints -> false, 'required -> "required")
+                            <input type="submit" value="Create" class="btn btn-primary"> 
+                        }
+                    </div>        		
+                    <div class="col col-sm-6">
+                        <table class="table table-hover">      
+                            <tr class="info">
+                                <th>Username</th>
+                                <th>User Group</th>
+                                <th></th>
+                            </tr>                                                  
+                        @userList.map{ user =>
+                            <tr>
+                                <td>@user.username</td>
+                                <td>@user.userGroup</td>
+                                <td><a href="@routes.UserManager.deleteUser(GeneralFunctions.getMD5Hash(user.uid.toString))"  onclick="return confirmAction();" class="btn btn-danger">x</a></td>
+                            </tr>
+                        }
+                        </table>
+                    </div>
+        		</div>        		
+        	</div>
+        </div>       
+    </body>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/generalFunctions.js")"></script>
+</html>

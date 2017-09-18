@@ -1,0 +1,157 @@
+@(adminheader : Html)(implicit request: RequestHeader)
+	@adminheader
+	
+<style>
+body {
+  font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: none;
+}
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+  $( "#datepicker1" ).datepicker({ dateFormat: 'yy-mm-dd' });
+  $( "#datepicker2" ).datepicker({ dateFormat: 'yy-mm-dd' });
+});
+</script>
+
+    
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">QSenti Main</div>
+        		<div class="panel-body">                 
+              @if(request.flash.get("error").getOrElse("")!=""){
+              <div class="alert alert-danger">              
+                @request.flash.get("error").getOrElse("")
+              </div>
+              }               
+              @if(request.flash.get("success").getOrElse("")!=""){
+              <div class="alert alert-success">              
+                @request.flash.get("success").getOrElse("")
+              </div>
+              }
+              <div class="col col-sm-6">        
+                <div id="linegraph">  
+                  <input type="text" id="datepicker1" placeholder value="Start Date">
+                  <input type="text" id="datepicker2" placeholder value="End Date"> 
+                  <input type="button" id="loadTrend" class="btn btn-primary" value="Load Data">
+                  <svg id="linechart"></svg>
+                </div>
+	            </div>   
+              <div class="col sol-sm-6">
+                <svg  id="piechart"></svg>
+              </div>
+        		</div>
+        	</div>
+        </div>
+    </body>
+    <script src="@routes.Assets.at("javascripts/d3/d3.js")"></script>   
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/linechart.js")"></script>
+    <script type="text/javascript">
+      $("#loadTrend").click(function(){
+        var startDate = $("#datepicker1").val();
+        var endDate = $("#datepicker2").val();
+        if(startDate=="Start Date" || endDate =="End Date" || startDate=="" || endDate ==""){
+          alert("Select Two Dates");
+          return ;
+        }
+        if(startDate>endDate){
+            alert("Date Error");
+        }
+        // alert('@routes.AdminArea.getTrendData("","")' + '"'+startDate+'"/"'+endDate+'"'));
+        $.ajax({url: 'adminArea/getTrendData/'+startDate+'/'+endDate, success: function(result){
+            $("#linechart").html("");
+            $("#piechart").html("");
+            console.log(result);
+            if(typeof result.trendData == 'undefined'){
+              alert(result);              
+            }
+            else{              
+              drawLineChart(result.trendData);
+              drawPieChart(result.pieChartData);
+            }
+        }});
+      }); 
+    </script>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/piechart.js")"></script>
+    <!--<script type="text/javascript">
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = 400 - margin.left - margin.right,
+    height = 250 - margin.top - margin.bottom;
+
+
+var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 0);
+
+var y = d3.scale.linear()
+  .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+  .scale(x)
+  .orient("bottom");
+
+var yAxis = d3.svg.axis()
+  .scale(y)
+  .orient("left");
+
+var line = d3.svg.line()
+  .x(function(d) { return x(d.name); })
+  .y(function(d) { return y(d.value); });
+
+var svg = d3.select("#test").append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+
+  var data = [
+ {"":"","":0}
+  ];
+
+  data.forEach(function(d) {
+    d.value = +d.value;
+  });
+
+  x.domain(data.map(function(d) { return d.name; }));
+  y.domain(d3.extent(data, function(d) { return d.value; }));
+
+  svg.append("g")
+    .attr("class", "x axis")    
+    .transition().duration(2000)
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+  svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Positive");
+
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("transform", "translate("+ (width / data.length) / 2 +",0)")
+      .attr("d", line);
+
+    </script> -->
+
+</html>

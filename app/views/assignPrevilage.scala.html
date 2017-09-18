@@ -1,0 +1,108 @@
+@(adminHeader : Html,previlageForm : Form[AssignPrevilageInfo], userSeq : Seq[(String,String)],reports : List[(String,Int,Int)])(implicit request: RequestHeader)
+	@adminHeader
+		<div class="admin-outer">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Assign Previlage to the users</div>
+				<div class="panel-body">
+					 @if(request.flash.get("error").getOrElse("")!=""){
+		              <div class="alert alert-danger">              
+		                @request.flash.get("error").getOrElse("")
+		              </div>
+		              }
+		              @if(request.flash.get("success").getOrElse("")!=""){
+		              <div class="alert alert-success">              
+		                @request.flash.get("success").getOrElse("")
+		              </div>
+		              }
+					@helper.form(action= routes.UserManager.doAssignUserPrevilage){
+					<div class="input-group">
+						<div class="input-group-addon">Select User Group</div>
+						@helper.select(field = previlageForm("user"), options = userSeq, '_label -> "", 'class -> "form-control", '_showConstraints -> false, 'required -> "required")
+						<div class="input-group-addon">Select Report Type</div>
+						<select class="form-control" onchange="loadReportItems(this.value);" name="reportType">
+							<option value="0">Select Report Type</option>
+							<option value="1">Report View</option>
+							<option value="2">Report Page</option>
+						</select>
+					</div>
+					<div class="wrapper"></div>
+					<div class="col col-sm-6">
+						<div class="list-group" id="originalList">
+
+						</div>
+					</div>
+					<div class="col col-sm-6">
+						<div class="list-group" id="newList">
+							<span class="list-group-item active" >Selected Pages</span>
+						</div>
+					</div>
+					<!-- helper.checkbox(field=previlageForm("page"), '_showConstraints -> false)  -->
+					<!-- reports.map{ report =>
+						<input type="checkbox" name="page[]" value="true"> report._1.toString()<br><div class="wrapper"></div>
+					} -->
+					<!-- <input type="checkbox" name="page[]" value="true"> My Page -->
+					<br>
+					<div class="wrapper"></div>
+					<div class="col col-sm-12">
+						<input type="submit" class="btn btn-primary pull-right" value="Assign">
+					</div>
+					
+					}
+				</div>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	function addItemToList(hashId){
+      var newList = document.getElementById("newList");
+      var elementId = "report"+hashId;
+      var currentItem = document.getElementById(elementId);
+      var currentButton = document.getElementById("exchangeButton"+hashId);
+      var hiddenInput = document.createElement("input");
+      hiddenInput.setAttribute("type","hidden");
+      hiddenInput.setAttribute("name","page[]");
+      hiddenInput.setAttribute("id","hidden"+hashId);
+      hiddenInput.setAttribute("value",hashId);
+      
+      currentItem.appendChild(hiddenInput);
+      currentButton.setAttribute("onclick","removeItemFromList('"+hashId+"');")
+      currentButton.innerHTML = '<span class="glyphicon glyphicon-minus"></span>';
+      currentButton.setAttribute("class","btn btn-danger");
+      newList.appendChild(currentItem);
+    }
+
+    function removeItemFromList(hashId){
+      var originalList = document.getElementById("originalList");
+      var elementId = "report"+hashId;
+      var currentItem = document.getElementById(elementId);
+      var currentButton = document.getElementById("exchangeButton"+hashId);
+      var hiddenInput = document.getElementById("hidden"+hashId);
+      currentItem.remove(hiddenInput);
+      currentButton.setAttribute("onclick","addItemToList('"+hashId+"');")
+      currentButton.innerHTML = '<span class="glyphicon glyphicon-plus"></span>';
+      currentButton.setAttribute("class","btn btn-success");
+      originalList.appendChild(currentItem);   
+    }
+
+    function loadReportItems(reportType){
+    	if (reportType==0) { 
+    		alert("Please Select a valid Report type"); 
+    		document.getElementById("originalList").innerHTML="";
+    	}
+    	else{
+    		$.ajax({
+    			type: 'GET',
+    			url: '../../../webService/api/read/reportsForPrevilage/'+reportType,
+    			success: function(result){
+    				document.getElementById("originalList").innerHTML=result;			
+    			}
+    		});
+    	}
+    }
+	</script>
+	<style type="text/css">
+	dt{
+		display :none;
+	}
+	</style>
+</html>

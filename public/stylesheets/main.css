@@ -1,0 +1,133 @@
+body{
+	position: relative;
+}
+.login-outer{
+	margin: auto; 
+	width: 300px; 
+	padding-top:100px; 
+	height: 300px;
+}
+
+.admin-outer{
+	margin:auto;
+	width: 1000px;
+	min-height: 500px;
+}
+.small-1{
+	width: 6%;
+	display: inline-block;
+}
+.small-2{
+	width: 12%;
+	display: inline-block;
+}
+.small-3{
+	width: 18%;
+	display: inline-block;
+}
+.small-4{
+	width: 24%;
+	display: inline-block;
+}
+.small-5{
+	width: 30%;
+	display: inline-block;
+}
+.small-6{
+	width: 36%;
+	display: inline-block;
+}
+.dashShadow{
+	box-shadow: 0px 0px 2px #888888;
+	background: #F0F0F0;
+}
+.previewBox{
+	width: 32%;
+	margin-left: 10px;
+	float: right;
+}
+.previewTitle{
+	width: 94%;
+	color: #FF6600;
+	font-weight: bold;
+	padding: 15px;
+	background: rgba(255,220,165,.5);
+	float: left;
+	margin: 10px;
+}
+.toolBox{
+	width: 100%;
+	height: 42px;
+	background: #FFF;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.dashBoard_icon{
+	margin-top: 5px;
+}
+.margin_top_10{
+	margin-top :10px;
+	} 
+.wrapper{
+	height: 5px;
+	width: 5px;
+	background: none;
+}
+.wrapperForFormErro{
+	width: 5px;
+	height: 20px;
+	background: none;
+}
+
+#ChartCreator dt{
+	display: none;
+}
+.remove-dt dt{
+	display: none;
+}
+
+.remove-dt dd.error{
+	position: absolute;
+	z-index: 50;
+	margin-top: 35px;
+	color: #AA0000;
+}
+
+/*For Sub Menu Creation*/
+.marginBottom-0 {margin-bottom:0;}
+
+.dropdown-submenu{position:relative;}
+.dropdown-submenu>.dropdown-menu{top:0;left:100%;margin-top:-6px;margin-left:-1px;-webkit-border-radius:0 6px 6px 6px;-moz-border-radius:0 6px 6px 6px;border-radius:0 6px 6px 6px;}
+.dropdown-submenu> a:after{display:block;content:" ";float:right;width:0;height:0;border-color:transparent;border-style:solid;border-width:5px 0 5px 5px;border-left-color:#cccccc;margin-top:5px;margin-right:-10px;}
+.dropdown-submenu:hover>a:after{border-left-color:#555;}
+.dropdown-submenu.pull-left{float:none;}.dropdown-submenu.pull-left>.dropdown-menu{left:-100%;margin-left:10px;-webkit-border-radius:6px 0 6px 6px;-moz-border-radius:6px 0 6px 6px;border-radius:6px 0 6px 6px;}
+/*SubMenu Style Ends here*/
+
+.InteractiveChart svg{
+	outline: 1px solid rgba(0,0,0,.2);
+	margin-left: 10px;
+	margin-top: 20px;
+}
+
+
+select.custom{
+	padding: 0px;
+}
+
+.popupDivWhite{
+	width: 600px;
+	min-height: 230px;
+	background: rgba(215,215,215,.6);	
+	z-index: 10;
+	position: absolute;
+	margin-left: 300px;
+	top: 100px;
+	padding-left: 15px;
+	padding-right: 15px;
+	display: none;
+	border-radius: 10px;
+}
+.csstest{
+	border-radius: 15px;
+	width: 250px;
+}

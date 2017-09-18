@@ -1,0 +1,164 @@
+
+              @()
+                  adminHeader
+              
+                <!DOCTYPE html>
+                <html>
+                <meta charset="utf-8">
+                <head>
+                <script src="d3/d3.js"></script>
+                <script>
+                var data_a = {
+                    "name":"Sample",
+                    "positive":{
+                        "values":[100,100,110,105,85]
+                    },
+                    "negative":{
+                        "values":[50,100,110,105,85]
+                    },
+                    "very_positive":{
+                        "values":[100,50,110,105,85]
+                    },
+                    "very_negative":{
+                        "values":[100,100,50,105,85]
+                    },
+                    "neutral":{
+                        "values":[100,100,110,50,85]
+                    },
+                    "values":[15,25,36,35,44]
+                };
+                
+                // var data = [
+                //     {
+                //         "name" : "Sabi",
+                //         "value" : 50
+                //     },
+                //     {
+                //         "name" : "Lee",
+                //         "value" : 25
+                //     },
+                //     {
+                //         "name" : "Vign",
+                //         "value" : 35
+                //     },
+                //     {
+                //         "name" : "Kammat",
+                //         "value" : 12
+                //     },
+                //     {
+                //         "name" : "Hello",
+                //         "value" : 20
+                //     }
+                // ];var w = 400;
+                // var h = 400;
+                // var r = h/2;
+                // var color = d3.scale.category20c();
+                
+                // var data = [{"label":"Category A", "value":50}, 
+                //                   {"label":"Category B", "value":50}, 
+                //                   {"label":"Category C", "value":30}];
+                
+                
+                // var vis = d3.select('#chart').append("svg:svg").data([data]).attr("width", w).attr("height", h).append("svg:g").attr("transform", "translate(" + r + "," + r + ")");
+                // var pie = d3.layout.pie().value(function(d){return d.value;});
+                
+                // // declare an arc generator function
+                // var arc = d3.svg.arc().outerRadius(r);
+                
+                // // select paths, use arc generator to draw
+                // var arcs = vis.selectAll("g.slice").data(pie).enter().append("svg:g").attr("class", "slice");
+                // arcs.append("svg:path")
+                //     .attr("fill", function(d, i){
+                //         return color(i);
+                //     })
+                //     .attr("d", function (d) {
+                //         // log the result of the arc generator to show how cool it is :)
+                //         console.log(arc(d));
+                //         return arc(d);
+                //     });
+                
+                // // add the text
+                // arcs.append("svg:text").attr("transform", function(d){
+                //             d.innerRadius = 0;
+                //             d.outerRadius = r;
+                //     return "translate(" + arc.centroid(d) + ")";}).attr("text-anchor", "middle").text( function(d, i) {
+                //     return data[i].label;}
+                //         );
+                
+                
+                
+                
+                var data_b = [
+                    {"name":"positive", "value":23},
+                    {"name":"negative", "value":32},
+                    {"name":"very positive", "value":43},
+                    {"name":"very negative", "value":55},
+                ];
+                
+                var width = 960,
+                    height = 500,
+                    radius = height / 2 - 10;
+                
+                var arc = d3.svg.arc()
+                    .innerRadius(radius - 210)
+                    .outerRadius(radius);
+                
+                var pie = d3.layout.pie()
+                    .padAngle(.02);
+                
+                var color = d3.scale.category10();
+                
+                var svg = d3.select("body").append("svg")
+                    .attr("width", width)
+                    .attr("height", height)
+                    .append("g")
+                    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+                
+                
+                svg.selectAll("g")
+                    .data(pie(data_a.values))
+                    .enter().append("path")
+                    .style("fill", function(d, i) { 
+                        return color(i);
+                        // return i==1 ? "#099" : i==2 ? "#930" : i==3 ? "#606" : i==4 ? "#59C" : "#C06" ;
+                    })
+                    .attr("d", arc);
+                
+                console.log("Error Before this");
+                // d3.select("g")
+                //     .append("path")
+                //      // .attr("d", arc).data(pie(data_a.values))
+                //           /* .style("fill", function(d) {if(d.value<11.00)
+                //              {return " #8c564b";} else if(d.average_hours>11.00&d.average_hours<13.00)
+                //              {return  "#17becf";}else{return "#2ca02c";}})*/
+                //           /* .style("position","relative").style("left","50%")*/
+                //        .on('mouseover',function(d) {
+                //        div.transition().duration(200).style("opacity", .9);
+                //        div.html(
+                //            "<p style=\"color:black\"><b>Date =" + d.value
+                //                + "<br/>Average hours =</b></p>").style("left",
+                //            (d3.event.pageX) + "px").style("top",
+                //            (d3.event.pageY - 28) + "px");
+                //      }).on("mouseout", function(d) {
+                //    div.transition().duration(500).style("opacity", 0);
+                //  })
+                
+                
+                
+                
+                    function changeData(p){
+                        // alert(p.parent);
+                        console.log(p);
+                        // svg.selectAll("path")
+                        // .data(pie(data_a.values ))
+                        // .style("fill", function(d, i) { 
+                        // // return color(i);
+                        // return i==1 ? "#099" : i==2 ? "#930" : i==3 ? "#606" : i==4 ? "#59C" : "#C06" ;
+                        // })
+                        // .attr("d", arc);
+                    }
+                </script>
+                </head>
+                <body>
+                </body>
+                </html>

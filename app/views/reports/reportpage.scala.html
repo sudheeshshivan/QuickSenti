@@ -1,0 +1,356 @@
+@(jsonData : List[(play.api.libs.json.JsValue,Map[String,Any])], htmlComponentList : List[HtmlComponentList], readingStatus : String)
+
+<html>
+  <head>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+    <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+    <script src="@routes.Assets.at("javascripts/jquery-2.1.1.min.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.at("javascripts/bootstrap.js")" type="text/javascript"></script>
+  </head>
+  <body>
+  <style>
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.x.axis path {
+  display: none;
+}
+.rect, .line {
+  fill: #399BCC;
+  /*stroke: steelblue;*/
+  stroke-width: 1.5px;
+}
+.line{
+  fill : none;
+}
+      body {
+        font: 10px sans-serif;
+      }
+</style>
+        <div class="admin-outer">        	
+          @htmlComponentList.map{ component =>
+            @if(component.componentType=="Text Box"){
+              <input type="text" name="@component.controlName" id="@component.controlName" value="@component.defaultValue">
+            }else{
+              @if(component.componentType=="Drop Down"){
+              <select name="@component.controlName" id="@component.controlName">
+                @defining(component.defaultValue.split(",")) { optionList=>
+                  @optionList.map{ option=> 
+                    <option>@option</option>
+                  }
+                }
+              </select>
+              }else{
+                <input type="date">
+              }
+            }
+          }
+          <div class="InteractiveChart"></div>
+          
+        </div>
+        <!-- <form action="@routes.WebServices.chartApiGenerator" method="POST">
+          <input type="hidden" value="b6d767d2f8ed5d21a44b0e5886680cb9" name="hashId">
+          <select name="sentiopt">
+            <option>Positive</option>
+            <option>Negative</option>
+            <option>Very negative</option>
+            <option>Very positive</option>
+          </select>
+          <input type="submit">  
+        </form> -->
+        <button onclick="readAjaxData('sentiopt','Positive');">Click Here</button>
+    </body>
+  <script src="@routes.Assets.at("javascripts/d3/d3.js")"></script>
+
+  <script>
+  var width,height,color,title,actualdata,id,controlName;
+  controlName="";
+@for(singleJson <- jsonData){
+  width = @singleJson._2.get("width");
+  height = @singleJson._2.get("height");
+  color = '@singleJson._2.get("color")';
+  title = '@singleJson._2.get("chartName")';
+  actualdata = @scala.xml.Unparsed(singleJson._1.toString);
+  id='@GeneralFunctions.getMD5Hash(singleJson._2.get("chartId").get.toString())';
+  @if(singleJson._2.contains("htmlObject")){
+    controlName='@singleJson._2.get("htmlObject").get';
+    /*alert($("#"+controlName).attr("id"));*/
+  }
+  
+  @if(singleJson._2.get("chartType").get.toString()=="1"){
+    drawBarChart(actualdata,width,height,color,title,"",id,controlName);
+  }else{
+    @if(singleJson._2.get("chartType").get.toString()=="2"){
+      drawLineChart(actualdata,width,height,color,title,"",id,controlName);    
+    }else{
+      @singleJson._2.get("chartType")
+    }
+  }  
+}
+
+function drawBarChart(actualData,actualWidth,actualHeight,color,title,existingChart,chartId,controlName){
+
+  var margin = {top: 30, right: 10, bottom: 80, left: 50},
+      width = actualWidth - margin.left - margin.right,
+      height = actualHeight - margin.top - margin.bottom;
+
+  var x = d3.scale.ordinal()
+      .rangeRoundBands([0, width], .1);
+
+  var y = d3.scale.linear()
+      .range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  var chart;
+  if(existingChart==""){
+    chart = d3.select(".InteractiveChart")
+      .append("svg")
+      .attr("id","svgid");  
+    chart
+      .append("text")
+      .text(title)
+      .attr("transform","translate("+(width/2)+",20)");
+    chart = chart
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  }
+  else{
+    chart = existingChart;
+    // chart.selectAll(".bar").remove()
+    chart.selectAll(".bar").remove()
+    chart.selectAll("g").remove();
+  }
+  
+
+  // var data=[{"name":"2015-04-29","value":-77},{"name":"2015-05-03","value":-91},{"name":"2015-05-04","value":-76},{"name":"2015-05-05","value":-55},{"name":"2015-05-06","value":-52}];
+  var data = actualData;
+  
+  var minScale = d3.min(data, function(d) { return d.x; })/2
+  // alert(minScale)
+
+  data.forEach(function(d) {
+    d.x = +d.x;
+    x.domain(data.map(function(d) { return d.y; }));
+    y.domain([d3.min(data, function(d) { return d.x; })-minScale,d3.max(data, function(d) { return d.x; })]);
+  });
+
+  // d3.tsv("data.tsv", type, function(error, data) {
+  //   x.domain(data.map(function(d) { return d.name; }));
+  //   y.domain([d3.min(data, function(d) { return d.value; })-10, d3.max(data, function(d) { return d.value; })]);
+
+  chart.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")  
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", function(d) {
+              return "rotate(-65)" 
+              });
+
+  chart.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .selectAll("g");
+
+  chart.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")          
+      .attr("height", 0)
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d.y); })
+      .attr("y", function(d) { return y(d.x); })
+      @if(readingStatus=="integration"){
+      .transition()
+      .duration(500)
+      .ease("expr")
+      }
+      .attr("height", function(d) { return height - y(d.x); })
+      .attr("width", x.rangeBand())
+      .attr("fill",color);
+
+    if(existingChart==""&&controlName!=""){
+      console.log("Adding Listner");
+      document.getElementById(controlName).addEventListener("change", function(){
+        var dataToSend={};
+        dataToSend[controlName]=$("#"+controlName).val();
+        dataToSend["hashId"]=chartId;
+        $.ajax({
+          type: 'POST',
+          url: '../../../read/chartWithFilters', 
+          data: dataToSend,
+          success: function(result){
+            drawBarChart(result,actualWidth,actualHeight,color,title,chart);
+          }
+        });
+      });
+    }
+
+}
+  // });
+
+
+function drawLineChart(actualData,actualWidth,actualHeight,color,title,existingChart,chartId,controlName){
+
+  var margin = {top: 30, right: 10, bottom: 80, left: 50},
+      width = actualWidth - margin.left - margin.right,
+      height = actualHeight - margin.top - margin.bottom;
+
+  var x = d3.scale.ordinal()
+    .rangeRoundBands([0, width], 0);
+
+  var y = d3.scale.linear()
+    .range([height, 0]);
+
+  var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+  var chart;
+  if(existingChart==""){
+    chart = d3.select(".InteractiveChart")
+      .append("svg")
+      .attr("class","linechart")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  }
+  else{
+    chart = existingChart;
+    chart.selectAll("path").remove();
+    chart.selectAll("g").remove();
+  }
+  
+  var line = d3.svg.line()
+    .x(function(d) { return x(d.y); })
+    .y(function(d) { return y(d.x); })
+    .interpolate("monotone");
+
+  // var svg = d3.select/*("#linegraph").append*/(".linechart")
+  // .attr("width", width + margin.left + margin.right)
+  // .attr("height", height + margin.top + margin.bottom)
+  // .append("g")
+  // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  var data = actualData;
+  data.forEach(function(d) {
+    d.x = +d.x;
+  });
+
+  x.domain(data.map(function(d) { return d.y; }));
+  y.domain(d3.extent(data, function(d) { return d.x; }));
+   
+
+  chart.append("g")
+    .attr("class", "x axis")        
+    @if(readingStatus=="integration"){
+    .transition().duration(2000)
+    }
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+  chart.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Positive");
+
+  chart.append("path")    
+    .attr("stroke",color)
+    .datum(data)
+    .attr("class", "line")
+    .attr("transform", "translate("+ (width / data.length) / 2 +",0)")
+    .attr("d", line);
+
+
+  if(existingChart==""&&controlName!=""){
+    console.log("Adding Listner");
+    document.getElementById(controlName).addEventListener("change", function(){
+      var dataToSend={};
+      dataToSend[controlName]=$("#"+controlName).val();
+      dataToSend["hashId"]=chartId;
+      $.ajax({
+        type: 'POST',
+        url: '../../../../read/chartWithFilters', 
+        data: dataToSend,
+        success: function(result){
+          drawLineChart(result,actualWidth,actualHeight,color,title,chart);
+        }
+      });
+    });
+  }
+
+}
+
+function type(d) {
+  d.x = +d.x; // coerce to number
+  return d;
+}
+
+
+
+/*var fieldname="sentiopt";
+ var sentivalue ="Positive";
+var dataToSend ={};
+dataToSend[fieldname] = sentivalue;
+console.log(dataToSend);*/
+
+
+
+
+/*console.log(result);
+        var chart = d3.select("#svgid");
+        var data = result;
+        var minScale = d3.min(data, function(d) { return d.x; })/2
+        // alert(minScale)
+        var x = d3.scale.ordinal()
+            .rangeRoundBands([0, 400], .1);
+
+        var y = d3.scale.linear()
+            .range([450, 0]);
+        data.forEach(function(d) {
+          d.x = +d.x;
+          x.domain(data.map(function(d) { return d.y; }));
+          y.domain([d3.min(data, function(d) { return d.x; })-minScale,d3.max(data, function(d) { return d.x; })]);
+        });
+        chart.selectAll(".bar").remove();
+        alert(chart);
+        chart.selectAll(".bar")
+          .data(data)
+          .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.y); })
+            .attr("y", function(d) { return y(d.x); })
+            .attr("height", function(d) { return height - y(d.x); })
+            .attr("width", x.rangeBand())
+            .attr("fill",color);
+*/
+
+
+
+  </script>
+</html>

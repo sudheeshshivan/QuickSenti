@@ -1,0 +1,12 @@
+.login-outer{
+	margin: auto; 
+	width: 300px; 
+	padding-top:200px; 
+	height: 300px;
+}
+
+.admin-outer{
+	margin:auto;
+	width: 1000px;
+	min-height: 500px;
+}

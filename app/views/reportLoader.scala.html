@@ -1,0 +1,22 @@
+@(adminHeader : Html, hashId : String, reportType : Int)
+	@adminHeader
+	<div class="admin-outer">
+		@if(reportType==1){
+			<iframe id="reportDataContainer" src='http://localhost:9000@routes.WebServices.loadReportViewContent(hashId,"integration")' frameBorder="0" width="1000" scrolling="no"></iframe>
+		}else{
+			<iframe id="reportDataContainer" src='http://localhost:9000@routes.WebServices.loadReportPageContent(hashId,"integration")' frameBorder="0" width="1000" scrolling="no"></iframe>
+		}
+	</div>
+
+	<script type="text/javascript">
+
+	$("#reportDataContainer").on("load", function () {
+		var iFrameID = document.getElementById('reportDataContainer');
+		iFrameID.height = iFrameID.contentWindow.document.body.scrollHeight + "px";
+		console.log(iFrameID.contentWindow.document.body.scrollHeight);
+	    // do something once the iframe is loaded
+	});
+
+	</script>
+</body>
+</html>

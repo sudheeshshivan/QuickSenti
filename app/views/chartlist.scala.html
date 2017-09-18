@@ -1,0 +1,43 @@
+@(adminheader : Html, chartList  : List[ChartList])(implicit request: RequestHeader)
+	@adminheader    
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">Chartlist</div>
+        		<div class="panel-body">  
+               @if(request.flash.get("error").getOrElse("")!=""){
+              <div class="alert alert-danger">              
+                @request.flash.get("error").getOrElse("")
+              </div>
+              }
+               @if(request.flash.get("success").getOrElse("")!=""){
+              <div class="alert alert-success">              
+                @request.flash.get("success").getOrElse("")
+              </div>
+              }
+              <table class="table table-hover">
+                <tr>
+                  <th>Chart Name</th>
+                  <th>Width</th>
+                  <th>Height</th>
+                  <th>Chart Type</th>
+                  <th>data Source</th>
+                </tr>
+              @for(chartItem <- chartList){
+                <tr>
+                  <td>@chartItem.chartname</td>
+                  <td>@chartItem.width</td>
+                  <td>@chartItem.height</td>
+                  <td>@if(chartItem.chartType==1){ Bar Chart } else{
+                    @if(chartItem.chartType==2){ Line Chart }else{ Pie Chart }
+                  }
+                  </td>
+                  <td>@chartItem.dataSourceName</td>
+                  <td><a href="@routes.WebServices.doRemoveGraph(GeneralFunctions.getMD5Hash(chartItem.chtid.toString()))" class="btn btn-danger">X</a></td>
+                </tr>
+              }
+              </table>              
+        		</div>
+        	</div>
+        </div>
+    </body>
+</html>

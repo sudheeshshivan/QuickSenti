@@ -1,0 +1,26 @@
+@(adminheader : Html, userGroupForm : Form[UserGroupInfo], userGroupList : List[UserGroup])
+	@adminheader
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">New User Group </div>
+        		<div class="panel-body">
+                    <div class="col col-sm-6">
+        			@helper.form(action = routes.UserManager.doNewUserGroup){
+                        @helper.inputText(userGroupForm("groupName"), '_label -> "Group Name", '_showConstraints -> false, 'required -> "required")
+                        <input type="submit" value="Create" class="btn btn-primary"> 
+                }        
+                    </div>		
+                    <div class="col col-sm-6">
+                        <span class="list-group">
+                            @userGroupList.map{ group =>
+                            <span class="list-group-item"> <a onclick="return confirmAction();" href="@routes.UserManager.deleteUserGroup(GeneralFunctions.getMD5Hash(group.grpid.toString()))" class="btn btn-danger">x</a> @group.groupName  
+                            </span>
+                          }
+                        </span>
+                    </div>
+        		</div>
+        	</div>
+        </div>
+    </body>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/generalFunctions.js")"></script>
+</html>

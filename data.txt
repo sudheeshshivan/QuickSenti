@@ -1,0 +1,5 @@
+Hai 
+This is the sample texrt file that i used to test the working of email attachment data into inline from scala mail.
+
+
+Thank you

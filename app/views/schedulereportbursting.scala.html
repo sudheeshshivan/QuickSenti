@@ -1,0 +1,59 @@
+@(adminHeader : Html, scheduleReportBurstingForm : Form[ScheduleReportBursting])
+	@adminHeader
+	<div class="admin-outer">
+		<div class="panel panel-primary">
+			<div class="panel-heading">Schedule Report Bursting</div>
+			<div class="panel-body remove-dt">
+				@helper.form(action=routes.WebServices.doScheduleReportBursting){
+
+				<div class="input-group">
+					<span class="input-group-addon">Time Hr:</span>
+					<!-- <input type="text" class="form-control" name="hour"> -->
+					@helper.inputText(field = scheduleReportBurstingForm("hour"), '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null)
+					<span class="input-group-addon">Min:</span>
+					@helper.inputText(field = scheduleReportBurstingForm("minute"), '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null)
+					<span class="input-group-addon"></span>
+					@helper.select(field = scheduleReportBurstingForm("frequency") , options = Seq(
+					"? * *" -> "Daily",
+					"? * SUN" -> "Sundays",
+					"? * MON" -> "Mondays",
+					"? * TUE" -> "Tuedays",
+					"? * WED" -> "Wednesdays",
+					"? * THU" -> "Thursdays",
+					"? * FRI" -> "Fridays",
+					"? * SAT" -> "Saturdays",
+					"1 * ?"	-> "First day in all Months",
+					"30 * ?" -> "Last day in All Month"
+					), '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null  )
+
+					<!-- <select class="form-control" name="frequency">
+						<option>Daily</option>
+						<option>All sundays</option>
+						<option>All Mondays</option>
+						<option>All Tuesdays</option>
+						<option>All Wednessdays</option>
+						<option>All Thursdays</option>
+						<option>All Fridays</option>
+						<option>All Saturdays</option>
+					</select> -->
+				</div>
+				<div class="wrapperForFormErro"></div>
+				<div class="input-group">
+					<span class="input-group-addon">Subject:</span>
+					@helper.inputText(field = scheduleReportBurstingForm("subject"), '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null)
+				</div>
+				<div class="wrapperForFormErro"></div>
+				<div class="input-group">
+					<span class="input-group-addon">Contents:</span>
+					@helper.textarea(field = scheduleReportBurstingForm("contents"), '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null)
+				</div>
+				<div class="wrapper"></div>
+				<a href="@routes.WebServices.doDeleteReportBurstingSchedule" class="btn btn-danger">Cancel Current Schedule</a>
+				<input type="submit" value="Submit" class="btn btn-primary pull-right">
+
+			}
+			</div>
+		</div>
+	</div>
+</body>
+</html>

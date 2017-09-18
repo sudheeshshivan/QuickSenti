@@ -1,0 +1,28 @@
+
+  
+  
+      TwitterAgent.sources = Twitter
+      TwitterAgent.channels = MemChannel
+      TwitterAgent.sinks = HDFS
+      
+      TwitterAgent.sources.Twitter.type = com.qburst.twittersource.TwitterSampleStreamSource
+      TwitterAgent.sources.Twitter.channels = MemChannel
+      TwitterAgent.sources.Twitter.consumer.key = A9op3GRJaXuhL1TjYEz094iKs
+      TwitterAgent.sources.Twitter.consumer.secret = aLcSA4RnVamUFfqvSStLIFdOO2sVN8Y5QeIyeu3tOvtfVAb8hC
+      TwitterAgent.sources.Twitter.access.token = 335366089-vVjzkb0BP6YvvO7r3vGvanA6wFuiqNcMsuF1apvN
+      TwitterAgent.sources.Twitter.access.token.secret = qUQgIQ99G8qYOmDW9xgLHp8vu8VmlY6oOvmc8jw3zssdF
+      TwitterAgent.sources.Twitter.filter.by = Delhi Election, Kejriwal, AK, AAP, Delhi CM
+      
+      TwitterAgent.sinks.HDFS.channel = MemChannel
+      TwitterAgent.sinks.HDFS.type = hdfs
+      TwitterAgent.sinks.HDFS.path = hdfs://localhost:9100/user/twitterSenti
+      TwitterAgent.sinks.HDFS.hdfs.writeFormat = Text
+      TwitterAgent.sinks.HDFS.hdfs.batchSize = 100000
+      TwitterAgent.sinks.HDFS.hdfs.rollSize = 0
+      TwitterAgent.sinks.HDFS.hdfs.rollCount = 1000000
+      
+      TwitterAgent.channels.MemChannel.type = memory
+      TwitterAgent.channels.MemChannel.capacity = 1000000
+      TwitterAgent.channels.MemChannel.transactionCapacity = 10000
+  
+  

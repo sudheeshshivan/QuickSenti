@@ -1,0 +1,109 @@
+@(adminheader : Html, reportPageForm : Form[ReportPage], reportPageList : List[ReportPageList])
+	@adminheader    
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">Create New Report Page</div>
+        		<div class="panel-body">  
+              <div class="col col-sm-6 remove-dt">
+              @helper.form(action = routes.WebServices.doNewReportPage){
+                <div class="input-group">
+                  <span class="input-group-addon">Page Name :</span>
+                @helper.inputText(field = reportPageForm("pageName"), '_label -> "", 'class -> "form-control", '_showConstraints -> false, 'required -> "required")
+                </div>
+                <div class="wrapperForFormErro"></div>
+                <div class="input-group">
+                  <span class="input-group-addon">Link Title :</span>
+                @helper.inputText(field = reportPageForm("linkTitle"), '_label -> "", 'class -> "form-control", '_showConstraints -> false, 'required -> "required")
+                </div>
+                <div class="wrapperForFormErro"></div>
+                <table class="table table-hover" id="htmlControlList">
+                  <!-- HTML control list will be added here. -->
+                </table>
+               <!--  <span class="btn btn-info" onclick="loadHtmlAdder();">Add html control</span> -->
+                <input type="submit" class="btn btn-primary pull-right" value="Submit">
+              }
+              </div>
+              <div class="col col-sm-6">
+                <div class="list-group">
+                  @for(reportPage <- reportPageList){
+                    <div class="list-group-item"><a href="#" class="btn btn-danger">X</a> @reportPage.pageName <a href="@routes.WebServices.updateReportPageStatus(GeneralFunctions.getMD5Hash(reportPage.rpgid.toString))" @if(reportPage.status==0){ class="btn btn-success" > Publish } else { class="btn btn-warning" > WithHeld }</a></div>  
+                  }
+                  
+                </div>
+              </div>
+        		</div>
+        	</div>
+        </div>
+        <div id="htmlAdderContainer" class="popupDivWhite">
+          <button type="button" class="close" onclick="hideHtmlAdder();"><span aria-hidden="true">&times;</span> </button>
+          <br><br>
+          <div class="wrapper"></div> 
+          <div class="input-group">
+            <span class="input-group-addon">Component type</span>
+            <select class="form-control" name="componentType" id="componentType">
+              <option>Drop Down</option>
+              <option>Text Box</option>
+              <option>Date Component</option>
+            </select>
+          </div>
+          <div class="wrapper"></div>
+          <div class="input-group">
+            <span class="input-group-addon">Default value</span>
+            <textarea name="defaultValue" id="defaultValue" class="form-control" placeholder="Use comma separation in case of drop down list"></textarea>
+          </div>
+          <div class="wrapper"></div>
+          <div class="input-group">
+            <span class="input-group-addon">Control Name:</span>
+            <input type="text" class="form-control" id="controlName" name="controlName">
+          </div>
+          <div class="wrapper"></div>
+          <button onclick="addControl();" class="btn btn-primary">Add</button>
+        </div>
+    </body>
+    <script type="text/javascript">
+    function loadHtmlAdder(){
+      $("#htmlAdderContainer").show();
+    }
+    function hideHtmlAdder(){
+      $("#htmlAdderContainer").hide();
+    }
+    function addControl(){
+      var componentType = document.getElementById("componentType");
+      var defaultValue = document.getElementById("defaultValue");
+      var controlName = document.getElementById("controlName");
+      var row = document.createElement("tr");
+      var componentTypeCol = document.createElement("td");
+      var componentTypeInput = document.createElement("input");
+      componentTypeInput.type="hidden";
+      componentTypeInput.value=componentType.value;
+      componentTypeInput.name="componentType[]";
+      componentTypeCol.appendChild(document.createTextNode(componentType.value));
+      componentTypeCol.appendChild(componentTypeInput);
+      row.appendChild(componentTypeCol);
+      var defaultValueCol = document.createElement("td");
+      var defaultValueInput = document.createElement("input");
+      defaultValueInput.type="hidden";
+      defaultValueInput.name="defaultValue[]";
+      defaultValueInput.value=defaultValue.value;
+      defaultValueCol.appendChild(defaultValueInput);
+      defaultValueCol.appendChild(document.createTextNode(defaultValue.value));
+      row.appendChild(defaultValueCol);
+      var controlNameCol = document.createElement("td");
+      var controlNameInput = document.createElement("input");
+      controlNameInput.name="controlName[]";
+      controlNameInput.type="hidden";
+      controlNameInput.value=controlName.value;
+      controlNameCol.appendChild(controlNameInput);
+      controlNameCol.appendChild(document.createTextNode(controlName.value));
+      row.appendChild(controlNameCol);
+      var tablebody = document.createElement("tbody");
+      var controlList = document.getElementById("htmlControlList").appendChild(tablebody);/*.getElementsByTagName("tbody")[0]*/
+      controlList.appendChild(row);
+      componentType.value="";
+      defaultValue.value="";
+      controlName.value="";
+      hideHtmlAdder();
+      // alert(componentType+defaultValue+controlName);
+    }
+    </script>
+</html>

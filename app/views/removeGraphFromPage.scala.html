@@ -1,0 +1,29 @@
+@(adminHeader : Html, reportPageList : List[ReportPageList])
+	@adminHeader
+		<div class="admin-outer">
+			<div class="input-group">
+				<span class="input-group-addon">Select Page : </span>
+				
+				<select class="form-control" onchange="readChartList(this.value);">
+					<option value="0">Choose a page</option>
+					@for(reportPage <- reportPageList){
+						<option value="@GeneralFunctions.getMD5Hash(reportPage.rpgid.toString())">@reportPage.pageName</option>
+					}
+				</select>
+			</div>
+			<div id="outputHolder"></div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	function readChartList(hashId){
+		$.ajax({
+          type: 'GET',
+          url: '../../../webService/api/read/graphAssignedToPage/'+hashId, 
+          success: function(result){
+          	document.getElementById("outputHolder").innerHTML= result;
+            console.log(result);
+          }
+        });
+	}
+	</script>
+</html>

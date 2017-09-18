@@ -1,0 +1,28 @@
+@(adminHeader : Html, userGroupSeq : Seq[(String,String)])
+	@adminHeader
+		<div class="admin-outer">
+			<div class="input-group"  style="width:500px; margin:auto;">
+				<span class="input-group-addon">Select Page : </span>
+				
+				<select class="form-control" onchange="readPrivilagedReport(this.value);">
+					@userGroupSeq.map{ userGroup =>
+					    <option value="@if(!userGroup._1.isEmpty){@GeneralFunctions.getMD5Hash(userGroup._1)}">@userGroup._2</option>
+					}
+				</select>
+			</div>
+			<div id="outputHolder" style="width:500px; margin:auto;"></div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	function readPrivilagedReport(hashId){
+		$.ajax({
+          type: 'GET',
+          url: '../../../webService/api/read/privilageAssignedToGroup/'+hashId, 
+          success: function(result){
+          	document.getElementById("outputHolder").innerHTML= result;
+            console.log(result);
+          }
+        });
+	}
+	</script>
+</html>

@@ -1,0 +1,206 @@
+@(adminheader : Html,chartCreationForm : Form[ChartInfo], dataSourceList : Seq[(String,String)])
+	@adminheader
+	
+</style>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    
+        <div class="admin-outer">
+        	<div class="panel panel-primary">
+        		<div class="panel-heading">Report Generator</div>
+        		<div class="panel-body">   
+
+              <div class="col col-sm-8 dashShadow">   
+                <div class="toolBox">
+                  &emsp;
+                  <a href="#"><img class="dashBoard_icon" src="@routes.Assets.at("images/bar_chart_icon.png")" width="32" height="32" onclick="selectChart('Bar Chart',1);" /></a>
+                  <a href="#"><img class="dashBoard_icon" src="@routes.Assets.at("images/line_chart_icon.png")" onclick="selectChart('Line Chart',2);" width="32" height="32" /></a>
+                  <a href="#"><img class="dashBoard_icon" src="@routes.Assets.at("images/pie_chart_icon.png")"  onclick="selectChart('Pie Chart',3);" width="32" height="32" /></a>
+                </div>                
+	            </div>   
+              <div class="previewBox dashShadow">
+                <span class="previewTitle">Preview</span>
+                <p>Hai Haal</p>
+              </div>
+              <br>
+              <div class="col col-sm-8 dashShadow" style="margin-top:10px;" id="ChartCreator">
+                <div class="wrapper"></div>
+                <div class="well well-lg">
+                  <strong id="chartHeader"> BarChart </strong>
+                </div>
+              @helper.form(action = routes.WebServices.doInteractiveReportGenerator){
+@if(chartCreationForm.hasErrors) {
+    <div class="alert alert-error">
+        <a class="close" data-dismiss="alert">x</a>
+          Some Errors are occured. Please Verify the input
+        @chartCreationForm.errors.map{ errorTuple =>
+          <span>@errorTuple.key : @errorTuple.message</span><br>
+      }
+    </div>
+}
+                <div class="input-group">
+                  <span class="input-group-addon">DataSource:</span>                  
+                  @helper.select(field = chartCreationForm("dataSource") , options = dataSourceList, '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null  )
+                </div>
+                <div class="wrapper"></div>
+                <div class="input-group">
+                  <span class="input-group-addon">Chart Name:</span>  
+                  @helper.inputText(field = chartCreationForm("chartName"), '_showConstraints -> false, 'required -> "required", 'class -> "form-control", '_label -> null)
+                </div>
+                <div class="wrapper"></div>
+                <div class="input-group">
+                  <span class="input-group-addon">Width:</span>                  
+                  <input type="text" class="form-control" name="width">
+                  <span class="input-group-addon">Height:</span>
+                  <input type="text" class="form-control" name="height">
+                </div>
+                <div class="wrapper"></div>
+                <div class="input-group">
+                  <span class="input-group-addon">X - Axis:</span>
+                  <select class="form-control" name="xAggregation" onchange="checkAggregationUsage(this);" id="aggregationX">
+                    <option value="none">None</option>
+                    <option value="sum">sum of</option>
+                    <option value="avg">average</option>
+                    <option value="count">count of</option>
+                  </select>
+                  <span class="input-group-addon"></span>
+                  <select class="form-control" name="xField" id="fieldX" onchange="checkAggregationFields(this);checkFieldsUnique(this);">
+                    <option value="sentiment">Sentiments</option>
+                    <option value="date">Date</option>
+                    <option value="retweetcount">Retweet Count</option>
+                    <option value="sentimentvalue">Sentiment Value</option>
+                  </select>
+                </div>
+                <div class="wrapper"></div>
+                <div class="input-group">
+                  <span class="input-group-addon">Y - Axis:</span>
+                  <select class="form-control" name="yAggregation" onchange="checkAggregationUsage(this);" id="aggregationY">
+                    <option value="none">None</option>
+                    <option value="sum">sum of</option>
+                    <option value="avg">average</option>
+                    <option value="count">count of</option>
+                  </select>
+                  <span class="input-group-addon"></span>
+                  <select class="form-control" name="yField" id="fieldY" onchange="checkAggregationFields(this);checkFieldsUnique(this);">
+                    <option value="sentiment">Sentiments</option>
+                    <option value="date">Date</option>
+                    <option value="retweetcount">Retweet Count</option>
+                    <option value="sentimentvalue">Sentiment Value</option>
+                  </select>
+                </div>
+                <div class="wrapper"></div>
+                <div class="input-group">
+                  <span class="input-group-addon">Group Based on:</span>
+                  <select class="form-control" name="groupBy" id="groupBy" onchange="isThereAnyAggregation();">
+                    <option value="none">None</option>
+                    <option value="sentiment">Sentiment</option>
+                    <option value="date">Date</option>
+                  </select>
+                </div>
+                <div class="wrapper"></div>
+                <div class="input-group">
+                  <span class="input-group-addon">Bar Color : <input type="color" name="color"></span>
+               <!--  </div>
+                <input type="hidden" value="" id="chartType" name="chartType" required> 
+                <a class="btn btn-primary" href="#" id="addFiltersButton" onclick="addMoreFilters();" >Add Filters</a>
+                <div id="filterList">
+                </div> -->
+                <input type="submit" class="btn btn-primary pull-right" onclick="return isThereAnyAggregation();" value="Submit"> 
+              }  
+                <br><br>
+              </div> 
+        		</div>
+        	</div>
+        </div>
+    </body>
+    <script type="text/javascript" src="@routes.Assets.at("javascripts/chartValidation.js")"></script>
+    <script type="text/javascript">
+    function selectChart(chartHeader,chartType){
+      document.getElementById("chartHeader").innerHTML = chartHeader;
+      document.getElementById("chartType").value = chartType;
+    }
+    function filterController(changer){
+      var filterList = document.getElementById("filterList");
+      if(changer.value=="NONE"){
+        changerParent = $("#"+changer.id).parent().prop('id');
+        $('#'+changerParent).nextAll('div').remove();
+      }
+      else{
+        addMoreFilters();
+      }
+    }
+
+    function addMoreFilters(){
+      var filterRows = filterList.getElementsByTagName("div");
+      var newRow = document.createElement("div");
+      newRow.setAttribute("class","input-group");
+      newRow.setAttribute("id","filterRow"+filterRows.length);
+      var blankLabel = document.createElement("span");
+      blankLabel.setAttribute("class","input-group-addon");
+      var fieldLabel = document.createElement("span");
+      fieldLabel.setAttribute("class","input-group-addon");
+      fieldLabel.appendChild(document.createTextNode("Field :"));
+      newRow.appendChild(fieldLabel);
+      var selectBox = document.createElement("select");
+      selectBox.setAttribute("class","form-control selectpicker");
+      selectBox.name="filterField[]";
+      var array = ["sentiment","date","sentimentvalue","retweetcount"]
+      newRow.appendChild(selectBox);
+      for (var i = 0; i < 4; i++) {
+        var option = document.createElement("option");
+        option.value = array[i];
+        option.text = array[i];
+        selectBox.appendChild(option);
+      }
+      newRow.appendChild(blankLabel);
+      var filterCondition = document.createElement("select");
+      filterCondition.setAttribute("class","form-control selectpicker");
+      filterCondition.name="filterCondition[]";
+      array = ["=","<",">"];
+      for (var i = 0; i < 3; i++) {
+        var option = document.createElement("option");
+        option.value = array[i];
+        option.text = array[i];
+        filterCondition.appendChild(option);
+      }
+      newRow.appendChild(filterCondition);
+      var paramLabel = document.createElement("span");
+      paramLabel.setAttribute("class","input-group-addon");
+      paramLabel.appendChild(document.createTextNode("Parameter :"));
+      newRow.appendChild(paramLabel);
+      var filterParameter = document.createElement("input");
+      filterParameter.setAttribute("class","form-control");
+      filterParameter.name = "filterParameter[]";
+      filterParameter.setAttribute("id","filterParameter")
+      newRow.appendChild(filterParameter);
+      var objectLabel = document.createElement("span");
+      objectLabel.setAttribute("class","input-group-addon");
+      objectLabel.appendChild(document.createTextNode("Object :"));
+      newRow.appendChild(objectLabel);
+      var htmlObject = document.createElement("input");
+      htmlObject.setAttribute("class","form-control");
+      htmlObject.name = "htmlObject[]";
+      htmlObject.id = "htmlObject";
+      newRow.appendChild(htmlObject);
+      var blankLabel2 = document.createElement("span");
+      blankLabel2.setAttribute("class","input-group-addon");
+      newRow.appendChild(blankLabel2);
+      var filterAdder = document.createElement("select");
+      filterAdder.setAttribute("class","form-control selectpicker");
+      filterAdder.name = "filterAdder[]";    
+      filterAdder.id = "filterAdder"+filterRows.length;
+      filterAdder.setAttribute("onchange","filterController(this);")
+      array=["NONE","AND","OR","BETWEEN"];
+      for (var i = 0; i < 4; i++) {
+        var option = document.createElement("option");
+        option.value = array[i];
+        option.text = array[i];
+        filterAdder.appendChild(option);
+      }
+      newRow.appendChild(filterAdder);
+      filterList.appendChild(newRow);
+      var addFiltersButton = document.getElementById("addFiltersButton");
+      addFiltersButton.setAttribute("disabled","disabled");
+    }
+    </script>
+</html>

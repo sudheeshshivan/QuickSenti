@@ -1,0 +1,18 @@
+               List of relations
+ Schema |       Name        | Type  |  Owner   
+--------+-------------------+-------+----------
+ public | analysisschedule  | table | postgres
+ public | chartdata         | table | postgres
+ public | charttopage       | table | postgres
+ public | filterdata        | table | postgres
+ public | htmlcomponentdata | table | postgres
+ public | reportpage        | table | postgres
+ public | reportview        | table | postgres
+ public | sentimentresult   | table | postgres
+ public | serviceapi        | table | postgres
+ public | tbldatasource     | table | postgres
+ public | tbluser           | table | postgres
+ public | tblusergroup      | table | postgres
+ public | userprevilage     | table | postgres
+(13 rows)
+

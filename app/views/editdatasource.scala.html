@@ -1,0 +1,70 @@
+@(adminheader : Html, configurationForm : Form[ConfigurationInfo], hashId : String)
+	@adminheader
+	
+	
+	
+    <!--   <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
+	<link href="@routes.Assets.at("stylesheets/prettify.css")" rel="stylesheet">
+	
+	
+	
+	
+	
+	
+	
+        <div class="admin-outer">
+        	
+        		
+        	<div class="col col-sm-8">
+        	    <div id="rootwizard" class="tabbable tabs-left">
+        	    @helper.form(action = routes.AdminArea.doUpdateConfiguration(hashId)){
+				    <ul>
+					    <li><a href="#tab1" data-toggle="tab">Basic</a></li>
+					    <li><a href="#tab2" data-toggle="tab">Authentication</a></li>
+				    </ul>
+				    <div class="tab-content">
+					    <div class="tab-pane" id="tab1">
+						    @helper.select(field = configurationForm("accountType") , options = Seq("twitter"->"Twitter", "facebook"->"Facebook", "linkedIn"->"Linked In"), '_showConstraints -> false, 'required -> "required", '_label -> "Data Source"  )
+							@helper.inputText(configurationForm("accountTitle") , '_showConstraints -> false, 'required -> "required", '_label -> "DataSource Name"  )
+							@helper.inputText(configurationForm("tablename") , '_showConstraints -> false, 'required -> "required", '_label -> "Table Name" )
+							
+							
+							
+					    </div>
+					    <div class="tab-pane" id="tab2">
+						    @helper.inputText(configurationForm("accessKey") , '_showConstraints -> false, 'required -> "required", '_label -> "Access Key" )
+							@helper.inputText(configurationForm("accessSecret") , '_showConstraints -> false, 'required -> "required", '_label -> "Access Secret" )
+							@helper.inputText(configurationForm("consumerKey") , '_showConstraints -> false, 'required -> "required", '_label -> "Consumer Key" )
+							@helper.inputText(configurationForm("consumerSecret") , '_showConstraints -> false, 'required -> "required", '_label -> "Consumer Secret" )
+							@helper.textarea(configurationForm("keywords") , '_showConstraints -> false, 'required -> "required", '_label -> "Keywords" )
+							
+							<input type="submit" value="Update" class="btn btn-primary" /> 
+					    </div>
+					    <ul class="pager wizard">
+						    <li class="previous first" style="display:none;"><a href="#">First</a></li>
+						    <li class="previous"><a href="#">Previous</a></li>
+						    <li class="next last" style="display:none;"><a href="#">Last</a></li>
+						    <li class="next"><a href="#">Next</a></li>
+					    </ul>
+				    </div>	
+			    </div>
+        						
+				}
+        		
+        	</div>
+        
+        
+        </div>
+       
+    </body>
+    
+	<script src="@routes.Assets.at("javascripts/jquery.bootstrap.wizard.js")"></script>
+	<script src="@routes.Assets.at("javascripts/prettify.js")"></script>
+	
+	
+    <script type="text/javascript">
+    	$(document).ready(function() {
+        	$('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-tabs'});
+        });
+    </script>
+</html>

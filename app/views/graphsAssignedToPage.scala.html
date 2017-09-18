@@ -1,0 +1,22 @@
+@(graphList : List[ChartList])
+
+
+	<div class="wrapper"></div><div class="wrapper"></div>
+	@helper.form(action = routes.WebServices.doRemoveGraphFromPage){
+		<table class="table table-hover">
+			@graphList.map{ singleGraph =>
+			<tr>
+				<td><input type="checkbox" name="hashId" value="@GeneralFunctions.getMD5Hash(singleGraph.ctdid.toString())"></td>
+				<td>@singleGraph.chartname</td>
+				<td>@singleGraph.dataSourceName</td>
+				<td></td>
+			</tr>
+			}
+			@if(graphList.isEmpty){
+			<tr>
+				<td>No Item Found</td>
+			</tr>
+			}
+		</table>
+		<input type="submit" value="Remove Charts" class="btn btn-danger">
+	}

@@ -1,0 +1,66 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET   	/                           						controllers.Application.index
+GET		/adminArea											controllers.AdminArea.dashboard 
+GET		/logout												controllers.Login.logout
+GET		/adminArea/dataSourceConfiguration					controllers.AdminArea.dataSource
+GET		/adminArea/dataSourceList							controllers.AdminArea.dataSourceList
+GET 	/adminArea/dataSource/detailedview/:hashId			controllers.AdminArea.dataSourceDetailedView(hashId : String)
+GET 	/adminArea/updateStreamingStatus/:hashId			controllers.AdminArea.updateStreamingStatus(hashId : String)
+GET		/adminArea/dataSourceConfiguration/edit/:hashId		controllers.AdminArea.editDataSource(hashId : String)
+GET		/adminArea/dataSource/delete/:hashId				controllers.AdminArea.deleteDataSource(hashId : String)
+GET		/adminArea/users/newUser							controllers.UserManager.newUser
+GET 	/adminArea/users/newGroup							controllers.UserManager.newUserGroup
+GET		/adminArea/users/list								controllers.UserManager.userList
+GET		/adminArea/getTrendData/:startDate/:endDate			controllers.AdminArea.getTrendData(startDate : String, endDate : String)
+GET		/adminArea/scheduleAnalysis							controllers.AdminArea.scheduleAnalysis
+GET		/adminArea/analysisSchedule/delete/:hashId			controllers.AdminArea.deleteAnalysisSchedule(hashId : String)
+GET		/adminArea/userGroup/delete/:hashId					controllers.UserManager.deleteUserGroup(hashId : String)
+GET 	/adminArea/users/delete/:hashId						controllers.UserManager.deleteUser(hashId : String)
+GET 	/webservice/API/new						controllers.WebServices.newServiceAPI
+GET 	/apigenerator/webservice/generate/:hashId			controllers.WebServices.apiGenerator(hashId : String)
+GET 	/WebService/webservice/uploadview					controllers.WebServices.uploadAPIView
+GET		/WebService/reports/show/:hashId						controllers.WebServices.loadReportView(hashId : String)
+GET		/WebService/reports/show_page/:hashId				controllers.WebServices.loadReportPage(hashId : String)
+GET		/webService/interactive/report/generator			controllers.WebServices.interactiveReportGenerator
+GET		/webService/interactive/report/chartlist			controllers.WebServices.chartList
+GET 	/webservice/reportPage/new							controllers.WebServices.newReportPage
+GET		/webservice/graphtopage/add							controllers.WebServices.graphToPage
+GET		/webservice/reportPageStatus/update/:hashId			controllers.WebServices.updateReportPageStatus(hashId : String)
+GET		/webService/remove/graph/fromPage					controllers.WebServices.removeGraphFromPage
+GET		/webService/api/read/graphAssignedToPage/:hashId	controllers.WebServices.apiReadGraphAssignedToPage(hashId : String)
+GET		/webService/api/read/privilageAssignedToGroup/:hashId	controllers.WebServices.apiReadPrivilageAssignedToGroup(hashId : String)
+GET		/webService/remove/graph/:hashId					controllers.WebServices.doRemoveGraph(hashId : String)
+GET		/user/assign/previlage						controllers.UserManager.assignUserPrevilage
+GET		/user/remove/previlage						controllers.UserManager.removeUserPrevilage
+GET		/webService/api/read/reportsForPrevilage/:reportType controllers.WebServices.apiReadReportForPrevilage(reportType : Int)
+GET		/userArea											controllers.UserArea.dashboard
+GET		/WebService/reports/show_page/content/:hashId/:export		controllers.WebServices.loadReportPageContent(hashId : String, export : String)
+GET		/WebService/reports/show/content/:hashId/:export		controllers.WebServices.loadReportViewContent(hashId : String, export : String)
+GET		/WebService/schedule/reportBursting					controllers.WebServices.scheduleReportBursting
+GET		/WebService/schedule/reportBursting/delete			controllers.WebServices.doDeleteReportBurstingSchedule
+GET		/WebService/remove/service/api/:hashId				controllers.WebServices.doRemoveService(hashId : String)
+
+
+POST		/doLogin										controllers.Login.doLogin
+POST		/adminArea/doConfiguration						controllers.AdminArea.doConfiguration
+POST 		/adminArea/doUpdateConfiguration/:hashId		controllers.AdminArea.doUpdateConfiguration(hashId : String)
+POST		/adminArea/doNewUserGroup						controllers.UserManager.doNewUserGroup
+POST		/adminArea/doScheduleAnalysis					controllers.AdminArea.doScheduleAnalysis
+POST 		/adminArea/createNewUser						controllers.UserManager.createNewUser
+POST 		/adminArea/createNewWebService					controllers.WebServices.doCreateServiceAPI
+POST 		/adminArea/webservice/doUploadview				controllers.WebServices.doUploadView
+POST		/webService/saveNew/chart						controllers.WebServices.doInteractiveReportGenerator
+POST		/webService/saveNew/reportPage					controllers.WebServices.doNewReportPage
+POST		/webService/saveNew/graphtoPage					controllers.WebServices.doAddGraphToPage
+POST		/WebService/read/chartWithFilters				controllers.WebServices.chartApiGenerator
+POST		/webService/doRemove/graph/fromPage				controllers.WebServices.doRemoveGraphFromPage
+POST		/user/doRemove/prilivalge/fromGroup				controllers.UserManager.doRemovePrivilage
+POST		/user/doAssign/previlage						controllers.UserManager.doAssignUserPrevilage
+POST 		/WebService/doSchedule/reportBursting			controllers.WebServices.doScheduleReportBursting
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
