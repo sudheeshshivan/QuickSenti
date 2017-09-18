@@ -19,9 +19,8 @@ object Application extends Controller {
   
   def index = Action {implicit request =>
 
-  	// Ok("Hello ...")
     Ok(views.html.main("QuickSenti | Login", Login.loginForm))
-    
+    // Ok("Hello ...")
   }
 
 }
