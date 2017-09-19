@@ -101,7 +101,12 @@ object AdminArea extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
 //      Ok(play.core.PlayVersion.current.toString())
       // Ok(views.html.dashboard(views.html.adminheader("Admin area | Dash Board",1,reportMenu)))   
-      Ok(views.html.dashboard2(views.html.adminheader("Admin area | Dash Board",1,reportMenu)))  
+      Ok(
+        views.html.dashboard2(
+          views.html.adminheader("Admin area | Dash Board",1,reportMenu), 
+          views.html.adminfooter()
+        )
+      )  
     }
     else{      
       Redirect(routes.Application.index()).flashing(
@@ -113,7 +118,14 @@ object AdminArea extends Controller {
   def dataSource = Action {implicit request =>
     if(checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
-      Ok(views.html.datasource(views.html.adminheader("Data Source Configuration",2,reportMenu), configurationForm,""))
+      Ok(
+          views.html.datasource(
+            views.html.adminheader("Data Source Configuration",2,reportMenu), 
+            configurationForm,
+            "",
+            views.html.adminfooter()
+          )
+        )
     }
     else{
       Redirect(routes.Application.index()).flashing(
@@ -146,13 +158,26 @@ object AdminArea extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
       configurationForm.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.datasource(views.html.adminheader("Configuration Error",2,reportMenu),formWithErrors,""))
+        BadRequest(
+          views.html.datasource(
+            views.html.adminheader("Configuration Error",2,reportMenu),
+            formWithErrors,
+            "",
+            views.html.adminfooter()
+          )
+        )
       },
       configurationData => {
         val result = AdminModel.saveConfiguration(configurationData.accountType, configurationData.accountTitle, configurationData.accessKey, configurationData.accessSecret, configurationData.consumerKey, configurationData.consumerSecret, configurationData.keywords, configurationData.tablename)
         
         if(result > 0){
-          Ok(views.html.datasource(views.html.adminheader("Data Source Configuration",2,reportMenu),configurationForm,"Configuration Updated Successfully"))
+          Ok(
+            views.html.datasource(
+              views.html.adminheader("Data Source Configuration",2,reportMenu),
+              configurationForm,"Configuration Updated Successfully",
+              views.html.adminfooter()
+              )
+            )
         }
         else{
           Ok("Updation Error")
@@ -192,7 +217,14 @@ object AdminArea extends Controller {
         val result = AdminModel.updateConfiguration(configurationData.accountType, configurationData.accountTitle, configurationData.accessKey, configurationData.accessSecret, configurationData.consumerKey, configurationData.consumerSecret, configurationData.keywords, configurationData.tablename,hashId)
         
         if(result > 0){
-          Ok(views.html.datasource(views.html.adminheader("Data Source Configuration",2,reportMenu),configurationForm,"Configuration Updated Successfully"))
+          Ok(
+            views.html.datasource(
+              views.html.adminheader("Data Source Configuration",2,reportMenu),
+              configurationForm,
+              "Configuration Updated Successfully",
+              views.html.adminfooter()
+            )
+          )
         }
         else{
           Ok("Updation Error")

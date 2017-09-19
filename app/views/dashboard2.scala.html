@@ -1,6 +1,8 @@
-@(adminheader : Html)(implicit request: RequestHeader)
-	@adminheader
+@(adminheader : Html, adminfooter : Html)(implicit request: RequestHeader)
 	
+@adminheader
+
+	<!-- 
 <style>
 body {
   font: 10px sans-serif;
@@ -34,3 +36,6 @@ body {
     </body>
 
 </html>
+ -->
+
+@adminfooter

@@ -1,17 +1,10 @@
-@(adminheader : Html, configurationForm : Form[ConfigurationInfo], message : String)
-	@adminheader
+@(adminheader : Html, configurationForm : Form[ConfigurationInfo], message : String, adminfooter : Html)
 	
-	
+@adminheader
 	
     <!--   <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
 	<link href="@routes.Assets.at("stylesheets/prettify.css")" rel="stylesheet">
-	
-	
-	
-	
-	
-	
-	
+
         <div class="admin-outer">
         	<div class="panel panel-primary">@message</div>
         	
@@ -47,22 +40,17 @@
 			    </div>
         						
 				}
-				
-        		
         	</div>
-        
-        
         </div>
-       
-    </body>
     
 	<script src="@routes.Assets.at("javascripts/jquery.bootstrap.wizard.js")"></script>
 	<script src="@routes.Assets.at("javascripts/prettify.js")"></script>
-	
 	
     <script type="text/javascript">
     	$(document).ready(function() {
         	$('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-tabs'});
         });
     </script>
-</html>
+
+@adminfooter
+
