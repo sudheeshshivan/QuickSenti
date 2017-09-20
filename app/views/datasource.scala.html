@@ -1,56 +1,164 @@
-@(adminheader : Html, configurationForm : Form[ConfigurationInfo], message : String, adminfooter : Html)
+@(adminheader : Html, configurationForm : Form[ConfigurationInfo], message : String, adminfooter : Html )
 	
 @adminheader
 	
-    <!--   <link href="../bootstrap/css/bootstrap.min.css" rel="stylesheet"> -->
-	<link href="@routes.Assets.at("stylesheets/prettify.css")" rel="stylesheet">
+<!--   
 
-        <div class="admin-outer">
-        	<div class="panel panel-primary">@message</div>
-        	
-        		
-        	<div class="col col-sm-8">
-        	    <div id="rootwizard" class="tabbable tabs-left">
-        	    @helper.form(action = routes.AdminArea.doConfiguration){
-				    <ul>
-					    <li><a href="#tab1" data-toggle="tab">Basic</a></li>
-					    <li><a href="#tab2" data-toggle="tab">Authentication</a></li>
-				    </ul>
-				    <div class="tab-content">
-					    <div class="tab-pane" id="tab1">
-						    @helper.select(field = configurationForm("accountType") , options = Seq("twitter"->"Twitter", "facebook"->"Facebook", "linkedIn"->"Linked In"), '_showConstraints -> false, 'required -> "required", '_label -> "Data Source"  )
-							@helper.inputText(configurationForm("accountTitle") , '_showConstraints -> false, 'required -> "required", '_label -> "DataSource Name" )
-							@helper.inputText(configurationForm("tablename") , '_showConstraints -> false, 'required -> "required", '_label -> "Table Name" )
-					    </div>
-					    <div class="tab-pane" id="tab2">
-						    @helper.inputText(configurationForm("accessKey") , '_showConstraints -> false, 'required -> "required", '_label -> "Access Key" )
-							@helper.inputText(configurationForm("accessSecret") , '_showConstraints -> false, 'required -> "required", '_label -> "Access Secret" )
-							@helper.inputText(configurationForm("consumerKey") , '_showConstraints -> false, 'required -> "required", '_label -> "Consumer Key" )
-							@helper.inputText(configurationForm("consumerSecret") , '_showConstraints -> false, 'required -> "required", '_label -> "Consumer Secret" )
-							@helper.textarea(configurationForm("keywords") , '_showConstraints -> false, 'required -> "required", '_label -> "Keywords" )
-							<input type="submit" value="Save" class="btn btn-primary" /> 
-					    </div>
-					    <ul class="pager wizard">
-						    <li class="previous first" style="display:none;"><a href="#">First</a></li>
-						    <li class="previous"><a href="#">Previous</a></li>
-						    <li class="next last" style="display:none;"><a href="#">Last</a></li>
-						    <li class="next"><a href="#">Next</a></li>
-					    </ul>
-				    </div>	
-			    </div>
-        						
-				}
-        	</div>
-        </div>
-    
-	<script src="@routes.Assets.at("javascripts/jquery.bootstrap.wizard.js")"></script>
-	<script src="@routes.Assets.at("javascripts/prettify.js")"></script>
-	
-    <script type="text/javascript">
-    	$(document).ready(function() {
-        	$('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-tabs'});
-        });
-    </script>
+@helper.select(field = configurationForm("accountType") , options = Seq("twitter"->"Twitter", "facebook"->"Facebook", "linkedIn"->"Linked In"), '_showConstraints -> false, 'required -> "required", '_label -> "Data Source"  )
+@helper.inputText(configurationForm("accountTitle") , '_showConstraints -> false, 'required -> "required", '_label -> "DataSource Name" )
+@helper.inputText(configurationForm("tablename") , '_showConstraints -> false, 'required -> "required", '_label -> "Table Name" )
 
+
+
+@helper.inputText(configurationForm("accessKey") , '_showConstraints -> false, 'required -> "required", '_label -> "Access Key" )
+@helper.inputText(configurationForm("accessSecret") , '_showConstraints -> false, 'required -> "required", '_label -> "Access Secret" )
+@helper.inputText(configurationForm("consumerKey") , '_showConstraints -> false, 'required -> "required", '_label -> "Consumer Key" )
+@helper.inputText(configurationForm("consumerSecret") , '_showConstraints -> false, 'required -> "required", '_label -> "Consumer Secret" )
+@helper.textarea(configurationForm("keywords") , '_showConstraints -> false, 'required -> "required", '_label -> "Keywords" )
+
+
+<input type="submit" value="Save" class="btn btn-primary" /> 
+
+-->
+
+<section class="content-header">
+	<h1>
+		DataSource Configuration
+	</h1>
+</section>
+
+<section class="content">            
+					
+	<div class="row">
+
+		<div class="col-md-8">
+							
+			<!-- general form elements disabled -->
+			<div class="box box-primary">
+				<div class="box-header">
+					<h3 class="box-title">Basic</h3>
+				</div><!-- /.box-header -->
+				<div class="box-body">
+					<form role="form">
+						<div class="form-group">
+						@helper.select(
+							field = configurationForm("accountType") , 
+							options = Seq(
+								"twitter"->"Twitter", 
+								"facebook"->"Facebook", 
+								"linkedIn"->"Linked In"
+							), 
+							'_showConstraints -> false, 
+							'required -> "required", 
+							'class -> "form-control",
+							'_label -> "Data Source"  
+						)
+						</div>
+
+						<div class="form-group">
+						@helper.inputText(configurationForm(
+							"accountTitle") , 
+							'_showConstraints -> false, 
+							'required -> "required", 
+							'class -> "form-control",
+							'placeholder -> "Enter Datasource Name",
+							'_label -> "DataSource Name" 
+						)
+						</div>
+
+						<div class="form-group">
+						@helper.inputText(
+							configurationForm("tablename"), 
+							'_showConstraints -> false, 
+							'required -> "required", 
+							'class -> "form-control",
+							'placeholder -> "Enter Table Name",
+							'_label -> "Table Name" 
+						)
+
+						<div class="box-header">
+							<h3 class="box-title">Authentication</h3>
+						</div><!-- /.box-header -->
+
+
+						<div class="form-group">
+						@helper.inputText(
+							configurationForm("accessKey") , 
+							'_showConstraints -> false, 
+							'required -> "required", 
+							'class -> "form-control",
+							'placeholder -> "Enter Access Key",
+							'_label -> "Access Key" 
+						)
+						</div>
+
+						<div class="form-group">
+						@helper.inputText(
+							configurationForm("accessSecret") , 
+							'_showConstraints -> false, 
+							'required -> "required", 
+							'class -> "form-control",
+							'placeholder -> "Enter Access Secret",
+							'_label -> "Access Secret" 
+						)
+						</div>
+						
+						<div class="form-group">
+						@helper.inputText(
+						 	configurationForm("consumerKey") ,
+						 	'_showConstraints -> false, 
+						 	'required -> "required", 
+						 	'class -> "form-control",
+							'placeholder -> "Enter Consumer Key",
+						 	'_label -> "Consumer Key" 
+			
+						)
+						</div>
+
+						<div class="form-group">
+						@helper.inputText(
+							configurationForm("consumerSecret") , 
+							'_showConstraints -> false, 
+							'required -> "required", 
+							'class -> "form-control",
+							'placeholder -> "Enter Consumer Secret",
+							'_label -> "Consumer Secret" 
+						)
+						</div>
+
+						<div class="form-group">
+						@helper.textarea(
+							configurationForm("keywords") , 
+							'_showConstraints -> false, 
+							'required -> "required", 
+							'class -> "form-control",
+							'placeholder -> "Enter Keywords",
+							'_label -> "Keywords" 
+						)
+						</div>
+
+						 <input type="submit" value="Save" class="btn btn-primary" /> 
+
+						<!-- textarea -->
+						<!-- <div class="form-group">
+							<label>Textarea</label>
+							<textarea class="form-control" rows="3" placeholder="Enter ..."></textarea>
+						</div>
+
+						<div class="form-group has-error">
+							<label class="control-label" for="inputError"><i class="fa fa-times-circle-o"></i> Input with error</label>
+							<input type="text" class="form-control" id="inputError" placeholder="Enter ...">
+						</div> -->
+
+					</form>
+				</div><!-- /.box-body -->
+			</div><!-- /.box -->
+
+		</div> <!-- /.column -->
+
+	</div> <!-- /.row -->
+
+</section>
+
+	 <!-- </aside> -->
 @adminfooter
-

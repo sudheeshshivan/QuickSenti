@@ -1,4 +1,4 @@
-@(adminheader : Html,uploadForm : Form[UploadViewInfo], serviceList : Seq[(String,String)], reportViewList :  List[ReportViewList] )
+@(adminheader : Html,uploadForm : Form[UploadViewInfo], serviceList : Seq[(String,String)], reportViewList :  List[ReportViewList], adminfooter : Html )
 	@adminheader
         <div class="admin-outer">
         	<div class="panel panel-primary">
@@ -32,5 +32,4 @@
         		</div>        		
         	</div>
         </div>       
-    </body>
-</html>
+    @adminfooter 

@@ -1,4 +1,4 @@
-@(adminheader : Html,chartCreationForm : Form[ChartInfo], dataSourceList : Seq[(String,String)])
+@(adminheader : Html,chartCreationForm : Form[ChartInfo], dataSourceList : Seq[(String,String)], adminfooter : Html )
 	@adminheader
 	
 </style>
@@ -203,4 +203,5 @@
       addFiltersButton.setAttribute("disabled","disabled");
     }
     </script>
-</html>
+<!-- </html> -->
+@adminfooter

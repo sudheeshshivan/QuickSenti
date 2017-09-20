@@ -1,4 +1,4 @@
-@(adminheader : Html, userForm : Form[UserInfo], groupList : Seq[(String,String)], userList : List[User])
+@(adminheader : Html, userForm : Form[UserInfo], groupList : Seq[(String,String)], userList : List[User], adminfooter : Html)
 	@adminheader
         <div class="admin-outer">
         	<div class="panel panel-primary">
@@ -34,6 +34,7 @@
         		</div>        		
         	</div>
         </div>       
-    </body>
+    <!-- </body> -->
     <script type="text/javascript" src="@routes.Assets.at("javascripts/generalFunctions.js")"></script>
-</html>
+<!-- </html> -->
+@adminfooter

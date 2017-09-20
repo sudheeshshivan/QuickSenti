@@ -114,7 +114,11 @@ object WebServices extends Controller {
     if(AdminArea.checkSession(request)){  
       val serviceList = WebServiceModel.readAllServiceAPI
       val reportMenu = GeneralFunctions.loadReportMenuItems
-      Ok(views.html.newServiceAPI(views.html.adminheader("New Serive API ", 2,reportMenu),webServiceAPIForm,serviceList))
+      Ok(views.html.newServiceAPI(views.html.adminheader("New Serive API ", 2,reportMenu),webServiceAPIForm,
+        serviceList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -127,13 +131,21 @@ object WebServices extends Controller {
       webServiceAPIForm.bindFromRequest.fold(
       formWithErrors => {        
         val serviceList = WebServiceModel.readAllServiceAPI  
-        Ok(views.html.newServiceAPI(views.html.adminheader("New Serive API ", 2, reportMenu),formWithErrors,serviceList))
+        Ok(views.html.newServiceAPI(views.html.adminheader("New Serive API ", 2, reportMenu),formWithErrors,
+          serviceList,
+          views.html.adminfooter()
+          )
+        )
       },
       apiData => {
         val result = WebServiceModel.saveNewAPI(apiData.serviceName, apiData.serivceQry)
         val serviceList = WebServiceModel.readAllServiceAPI
         if(result>0){
-          Ok(views.html.newServiceAPI(views.html.adminheader("Service Create Successfully ", 2,reportMenu),webServiceAPIForm,serviceList))
+          Ok(views.html.newServiceAPI(views.html.adminheader("Service Create Successfully ", 2,reportMenu),webServiceAPIForm,
+            serviceList,
+            views.html.adminfooter()
+            )
+          )
         }
         else{
           Ok(views.html.adminheader("Service Creation Failed ", 2, reportMenu))
@@ -224,7 +236,11 @@ object WebServices extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val reportViewList = WebServiceModel.readAllReportView
 //      println(reportViewList)
-      Ok(views.html.uploadview(views.html.adminheader("Upload New View ", 2,reportMenu),uploadViewForm,serviceList,reportViewList))
+      Ok(views.html.uploadview(views.html.adminheader("Upload New View ", 2,reportMenu),uploadViewForm,serviceList,
+        reportViewList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -240,10 +256,18 @@ object WebServices extends Controller {
          val reportBurstingSchedule = reportBurstingScheduleList.head
      		 val dataMap = Map("hour" -> reportBurstingSchedule.hour.toString(), "minute" -> reportBurstingSchedule.minute.toString(), "frequency" -> reportBurstingSchedule.frequency, "subject" -> reportBurstingSchedule.subject, "contents" -> reportBurstingSchedule.contents)
      		 val formForEdit = scheduleReportBurstingForm.bind(dataMap)
-     		 Ok(views.html.schedulereportbursting(views.html.adminheader("Upload New View ", 2,reportMenu),formForEdit))
+     		 Ok(views.html.schedulereportbursting(views.html.adminheader("Upload New View ", 2,reportMenu),
+          formForEdit,
+          views.html.adminfooter()
+          )
+         )
       }
       else{
-        Ok(views.html.schedulereportbursting(views.html.adminheader("Upload New View ", 2,reportMenu),scheduleReportBurstingForm))
+        Ok(views.html.schedulereportbursting(views.html.adminheader("Upload New View ", 2,reportMenu),
+          scheduleReportBurstingForm,
+          views.html.adminfooter()
+          )
+        )
       }
 //      println(re portViewList)
     }
@@ -257,7 +281,11 @@ object WebServices extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
       scheduleReportBurstingForm.bindFromRequest().fold(
         formWithError =>{
-          Ok(views.html.schedulereportbursting(views.html.adminheader("Upload New View ", 2,reportMenu),formWithError))
+          Ok(views.html.schedulereportbursting(views.html.adminheader("Upload New View ", 2,reportMenu),
+            formWithError,
+            views.html.adminfooter()
+            )
+          )
         }, 
         scheduleData =>{
           WebServiceModel.saveReportBurstingSchedule(scheduleData.hour, scheduleData.minute, scheduleData.frequency, scheduleData.subject, scheduleData.contents)
@@ -471,7 +499,10 @@ object WebServices extends Controller {
     if(AdminArea.checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val chartList = WebServiceModel.readAllCharts
-      Ok(views.html.chartlist(views.html.adminheader("Interactive Report Generator ", 2,reportMenu),chartList))
+      Ok(views.html.chartlist(views.html.adminheader("Interactive Report Generator ", 2,reportMenu),chartList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -482,7 +513,12 @@ object WebServices extends Controller {
     if(AdminArea.checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val dataSourceList = GeneralFunctions.loadDataSourcesForForm
-      Ok(views.html.interactiveReportGenerator(views.html.adminheader("Interactive Report Generator ", 2,reportMenu),chartCreationForm,dataSourceList))
+      Ok(views.html.interactiveReportGenerator(views.html.adminheader("Interactive Report Generator ", 2,reportMenu),
+        chartCreationForm,
+        dataSourceList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -495,7 +531,12 @@ object WebServices extends Controller {
       chartCreationForm.bindFromRequest.fold(
         formWithErrors=>{          
           val dataSourceList = GeneralFunctions.loadDataSourcesForForm
-          Ok(views.html.interactiveReportGenerator(views.html.adminheader("Interactive Report Generator ", 2, reportMenu),formWithErrors,dataSourceList))   
+          Ok(views.html.interactiveReportGenerator(views.html.adminheader("Interactive Report Generator ", 2, reportMenu),
+            formWithErrors,
+            dataSourceList,
+            views.html.adminfooter()
+            )
+          )   
         },
         chartData =>{
           val result = WebServiceModel.saveNewChart(chartData.dataSource, chartData.chartName ,chartData.width, chartData.height, chartData.xAggregation, chartData.xField, chartData.yAggregation, chartData.yField, chartData.groupBy,chartData.color, chartData.chartType)
@@ -530,7 +571,12 @@ object WebServices extends Controller {
     if(AdminArea.checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val reportPageList = WebServiceModel.readAllReportPage
-      Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator ", 2, reportMenu), reportPageForm, reportPageList))
+      Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator ", 2, reportMenu), 
+        reportPageForm, 
+        reportPageList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -542,7 +588,12 @@ object WebServices extends Controller {
       WebServiceModel.updateReportPageStatus(hashId)
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val reportPageList = WebServiceModel.readAllReportPage
-      Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator ", 2, reportMenu), reportPageForm, reportPageList))
+      Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator ", 2, reportMenu), 
+        reportPageForm, 
+        reportPageList, 
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -555,7 +606,12 @@ object WebServices extends Controller {
       reportPageForm.bindFromRequest.fold(
         formWithErrors => {
         	val reportPageList = WebServiceModel.readAllReportPage
-          Ok(views.html.newreportpage(views.html.adminheader("Some Errors Occured ", 2,reportMenu),formWithErrors,reportPageList))
+          Ok(views.html.newreportpage(views.html.adminheader("Some Errors Occured ", 2,reportMenu),
+            formWithErrors,
+            reportPageList,
+            views.html.adminfooter()
+            )
+          )
         }, 
         reportPageData => {
           val result = WebServiceModel.saveNewReportPage(reportPageData.pageName, reportPageData.linkTitle)
@@ -568,10 +624,20 @@ object WebServices extends Controller {
               val rpgid = WebServiceModel.readLastReportPageId
               WebServiceModel.saveHtmlComponent(componentType, defaultValue, controlName, rpgid)
             }
-    			  Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator ", 2,reportMenu),reportPageForm,reportPageList))   
+    			  Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator ", 2,reportMenu),
+              reportPageForm,
+              reportPageList,
+              views.html.adminfooter()
+              )
+            )   
           }
           else{
-            Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator Failed ", 2,reportMenu),reportPageForm,reportPageList))
+            Ok(views.html.newreportpage(views.html.adminheader("Interactive Report Generator Failed ", 2,reportMenu),
+              reportPageForm,
+              reportPageList,
+              views.html.adminfooter()
+              )
+            )
           }
         }
       )
@@ -586,7 +652,12 @@ object WebServices extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val reportPageSeq = GeneralFunctions.loadReportPagesForForm
       val chartList = WebServiceModel.readAllCharts
-      Ok(views.html.addgraphtopage(views.html.adminheader("Add Graph To Page", 2,reportMenu), graphToPageForm, reportPageSeq,chartList))
+      Ok(views.html.addgraphtopage(views.html.adminheader("Add Graph To Page", 2,reportMenu), graphToPageForm, 
+        reportPageSeq,
+        chartList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -601,12 +672,24 @@ object WebServices extends Controller {
       graphToPageForm.bindFromRequest.fold(
         formWithErrors => {
           Logger.error(formWithErrors.errors.toString())
-      	  Ok(views.html.addgraphtopage(views.html.adminheader("Error in chart adding to form ", 2,reportMenu),formWithErrors,reportPageSeq,chartList))
+      	  Ok(views.html.addgraphtopage(views.html.adminheader("Error in chart adding to form ", 2,reportMenu),
+            formWithErrors,
+            reportPageSeq,
+            chartList,
+            views.html.adminfooter()
+            )
+          )
           
         }, 
         chartToPageData => {
           WebServiceModel.saveChartToPage(chartToPageData.page, chartToPageData.charts)
-           Ok(views.html.addgraphtopage(views.html.adminheader("Successfully added chart to form ", 2,reportMenu),graphToPageForm,reportPageSeq,chartList))
+           Ok(views.html.addgraphtopage(views.html.adminheader("Successfully added chart to form ", 2,reportMenu),
+            graphToPageForm,
+            reportPageSeq,
+            chartList,
+            views.html.adminfooter()
+            )
+           )
         }
       )
     }
@@ -627,7 +710,13 @@ object WebServices extends Controller {
         uploadViewForm.bindFromRequest.fold(
           formWithErrors => {  
             val reportViewList = WebServiceModel.readAllReportView
-            Ok(views.html.uploadview(views.html.adminheader("Upload View Error", 2,reportMenu), formWithErrors, serviceList,reportViewList))
+            Ok(views.html.uploadview(views.html.adminheader("Upload View Error", 2,reportMenu),
+              formWithErrors,
+              serviceList,
+              reportViewList,
+              views.html.adminfooter()
+              )
+            )
           }, 
           uploadViewData => {      
             try{
@@ -646,7 +735,11 @@ object WebServices extends Controller {
               
             	WebServiceModel.saveNewView(uploadViewData.service, uploadViewData.linkTitle, filename)
             	val reportViewList = WebServiceModel.readAllReportView
-            	Ok(views.html.uploadview(views.html.adminheader("View Uploaded Successfully ", 2, reportMenu), uploadViewForm, serviceList,reportViewList))
+            	Ok(views.html.uploadview(views.html.adminheader("View Uploaded Successfully ", 2, reportMenu), 
+                uploadViewForm, serviceList,reportViewList,
+                views.html.adminfooter()
+                )
+              )
             }
             catch{
               case ex : Exception =>{
@@ -673,7 +766,11 @@ object WebServices extends Controller {
     if(AdminArea.checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val reportPageList = WebServiceModel.readAllReportPage
-      Ok(views.html.removeGraphFromPage(views.html.adminheader("Remove Graph From Page", 2,reportMenu),reportPageList)) 
+      Ok(views.html.removeGraphFromPage(views.html.adminheader("Remove Graph From Page", 2,reportMenu),
+        reportPageList,
+        views.html.adminfooter()
+        )
+      ) 
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -753,7 +850,11 @@ object WebServices extends Controller {
       for(chartAssignmentToRemove <- chartsToRemove){
         val result = WebServiceModel.removeChartsFromPage(chartAssignmentToRemove)
       }
-      Ok(views.html.removeGraphFromPage(views.html.adminheader("Remove Graph From Page | Item Removed", 2,reportMenu),reportPageList))
+      Ok(views.html.removeGraphFromPage(views.html.adminheader("Remove Graph From Page | Item Removed", 2,reportMenu),
+        reportPageList,
+        views.html.adminfooter()
+        )
+      )
     } 
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))

@@ -1,4 +1,4 @@
-@(adminHeader : Html,previlageForm : Form[AssignPrevilageInfo], userSeq : Seq[(String,String)],reports : List[(String,Int,Int)])(implicit request: RequestHeader)
+@(adminHeader : Html,previlageForm : Form[AssignPrevilageInfo], userSeq : Seq[(String,String)],reports : List[(String,Int,Int)], adminfooter : Html )(implicit request: RequestHeader)
 	@adminHeader
 		<div class="admin-outer">
 			<div class="panel panel-primary">
@@ -51,7 +51,7 @@
 				</div>
 			</div>
 		</div>
-	</body>
+	<!-- </body> -->
 	<script type="text/javascript">
 	function addItemToList(hashId){
       var newList = document.getElementById("newList");
@@ -105,4 +105,5 @@
 		display :none;
 	}
 	</style>
-</html>
+<!-- </html> -->
+ 	@adminfooter

@@ -1,4 +1,4 @@
-@(adminheader : Html, scheduleAnalysisForm : Form[ScheduleAnalysisInfo], dataSourceList : Seq[(String,String)], AnalysisScheduleList : List[AnalysisSchedule])
+@(adminheader : Html, scheduleAnalysisForm : Form[ScheduleAnalysisInfo], dataSourceList : Seq[(String,String)], AnalysisScheduleList : List[AnalysisSchedule], adminfooter : Html )
 	@adminheader
 
         <div class="admin-outer">
@@ -29,5 +29,4 @@
         		</div>
         	</div>
         </div>
-    </body>
-</html>
+@adminfooter

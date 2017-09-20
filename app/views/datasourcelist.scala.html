@@ -1,5 +1,5 @@
 @import controllers._
-@(adminheader : Html, dataSourceList : List[ConfigurationInfoList])
+@(adminheader : Html, dataSourceList : List[ConfigurationInfoList], adminfooter : Html )
 	@adminheader
         <div class="admin-outer">
         	<div class="panel panel-primary">
@@ -31,6 +31,36 @@
         
         
         </div>
-       
-    </body>
-</html>
+@adminfooter
+
+                <!-- <div class="row">
+                        <div class="col-xs-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Data Source List</h3>
+                                    <div class="box-tools">
+                                        
+                                    </div>
+                                </div>
+                                <div class="box-body table-responsive no-padding">
+                                    <table class="table table-hover">
+                                                <th>Data Source</th>
+                                                <th>Current Status</th>
+                                                <th></th> 
+                                                <th></th>                               
+                                        </tr>
+                                        @dataSourceList.map{ config =>
+                                        <tr>                                            
+                                                <td><a href='@routes.AdminArea.dataSourceDetailedView(GeneralFunctions.getMD5Hash(config.dsid.toString))'> @config.accountTitle </a> </td>
+                                                <td>@if(config.processid > 0){ <img src="@routes.Assets.at("images/running_icon.png")" width="32" height="32" /> } else {<img src="@routes.Assets.at("images/stop_icon.png")" width="32" height="32" /> }</td>
+                                                <td><a href="@routes.AdminArea.updateStreamingStatus(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary right">  @if(config.processid > 0){Stop Streaming} else {Start Streaming} </a></td>
+                                                <td><a href="@routes.AdminArea.deleteDataSource(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary right">  Delete </a></td>
+                                        </tr>
+                                        }    
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
+@adminfooter -->

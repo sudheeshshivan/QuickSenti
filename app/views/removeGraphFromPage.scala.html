@@ -1,4 +1,4 @@
-@(adminHeader : Html, reportPageList : List[ReportPageList])
+@(adminHeader : Html, reportPageList : List[ReportPageList], adminfooter : Html )
 	@adminHeader
 		<div class="admin-outer">
 			<div class="input-group">
@@ -13,7 +13,7 @@
 			</div>
 			<div id="outputHolder"></div>
 		</div>
-	</body>
+	<!-- </body> -->
 	<script type="text/javascript">
 	function readChartList(hashId){
 		$.ajax({
@@ -26,4 +26,5 @@
         });
 	}
 	</script>
-</html>
+<!-- </html> -->
+@adminfooter

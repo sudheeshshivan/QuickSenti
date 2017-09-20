@@ -1,4 +1,4 @@
-@(adminheader : Html, graphToPageForm : Form[GraphToPage], reportPageList : Seq[(String,String)], chartList : List[ChartList])
+@(adminheader : Html, graphToPageForm : Form[GraphToPage], reportPageList : Seq[(String,String)], chartList : List[ChartList] , adminfooter : Html )
 	@adminheader    
         <div class="admin-outer">
         	<div class="panel panel-primary">
@@ -32,7 +32,7 @@
         		</div>
         	</div>
         </div>
-    </body>
+    <!-- </body> -->
     <script type="text/javascript">
     function addItemToList(hashId){
       var newList = document.getElementById("newList");
@@ -56,4 +56,5 @@
       originalList.appendChild(currentItem);   
     }
     </script>
-</html>
+<!-- </html> -->
+@adminfooter

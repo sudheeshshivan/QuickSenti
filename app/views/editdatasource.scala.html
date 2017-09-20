@@ -1,4 +1,4 @@
-@(adminheader : Html, configurationForm : Form[ConfigurationInfo], hashId : String)
+@(adminheader : Html, configurationForm : Form[ConfigurationInfo], hashId : String, adminfooter : Html)
 	@adminheader
 	
 	
@@ -56,7 +56,7 @@
         
         </div>
        
-    </body>
+    <!-- </body> -->
     
 	<script src="@routes.Assets.at("javascripts/jquery.bootstrap.wizard.js")"></script>
 	<script src="@routes.Assets.at("javascripts/prettify.js")"></script>
@@ -67,4 +67,5 @@
         	$('#rootwizard').bootstrapWizard({'tabClass': 'nav nav-tabs'});
         });
     </script>
-</html>
+<!-- </html> -->
+@adminfooter

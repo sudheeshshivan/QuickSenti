@@ -1,4 +1,4 @@
-@(adminheader : Html, chartList  : List[ChartList])(implicit request: RequestHeader)
+@(adminheader : Html, chartList  : List[ChartList], adminfooter : Html )(implicit request: RequestHeader)
 	@adminheader    
         <div class="admin-outer">
         	<div class="panel panel-primary">
@@ -39,5 +39,6 @@
         		</div>
         	</div>
         </div>
-    </body>
-</html>
+ <!--    </body>
+</html> -->
+@adminfooter

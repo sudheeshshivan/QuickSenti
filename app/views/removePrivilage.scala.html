@@ -1,4 +1,4 @@
-@(adminHeader : Html, userGroupSeq : Seq[(String,String)])
+@(adminHeader : Html, userGroupSeq : Seq[(String,String)], adminfooter :Html)
 	@adminHeader
 		<div class="admin-outer">
 			<div class="input-group"  style="width:500px; margin:auto;">
@@ -12,7 +12,7 @@
 			</div>
 			<div id="outputHolder" style="width:500px; margin:auto;"></div>
 		</div>
-	</body>
+	<!-- </body> -->
 	<script type="text/javascript">
 	function readPrivilagedReport(hashId){
 		$.ajax({
@@ -25,4 +25,5 @@
         });
 	}
 	</script>
-</html>
+<!-- </html> -->
+@adminfooter

@@ -1,4 +1,4 @@
-@(adminheader : Html, userGroupForm : Form[UserGroupInfo], userGroupList : List[UserGroup])
+@(adminheader : Html, userGroupForm : Form[UserGroupInfo], userGroupList : List[UserGroup], adminfooter : Html )
 	@adminheader
         <div class="admin-outer">
         	<div class="panel panel-primary">
@@ -21,6 +21,7 @@
         		</div>
         	</div>
         </div>
-    </body>
+    <!-- </body> -->
     <script type="text/javascript" src="@routes.Assets.at("javascripts/generalFunctions.js")"></script>
-</html>
+<!-- </html> -->
+@adminfooter

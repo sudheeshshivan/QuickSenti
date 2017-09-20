@@ -1,11 +1,26 @@
-@(adminheader : Html, webServiceAPIForm : Form[WebServiceInfo], serviceList : List[ServiceList])
+@(adminheader : Html, webServiceAPIForm : Form[WebServiceInfo], serviceList : List[ServiceList], adminfooter : Html)
 	@adminheader
+
+  <!-- Content Header (Page header) -->
+<!--     <section class="content-header">
+        <h1>
+            Blank page
+            <small>Control panel</small>
+        </h1>
+        <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
+            <li class="active">Blank page</li>
+        </ol>
+    </section> -->
+
+    <!-- Main content -->
+    <section class="content">
 
 
         <div class="admin-outer">
-        	<div class="panel panel-primary">
-        		<div class="panel-heading">New Service API</div>
-        		<div class="panel-body">   
+          <div class="panel panel-primary">
+            <div class="panel-heading">New Service API</div>
+            <div class="panel-body">   
               <div class="col col-sm-6">
                
               @helper.form(action = routes.WebServices.doCreateServiceAPI){
@@ -22,13 +37,19 @@
                 }
                 </span>
               </div>
-        		</div>
-        	</div>
+            </div>
+          </div>
         </div>
-    </body>
+
+
+    </section><!-- /.content -->
+
+
+
+  
       <script>
 $(".list-group-item").click(function(){
     $('[data-toggle="popover"]').popover();
 });
 </script>
-</html>
+@adminfooter

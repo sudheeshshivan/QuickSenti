@@ -89,7 +89,10 @@ object UserManager  extends Controller {
     if(AdminArea.checkSession(request)){  
       val groupSeq = GeneralFunctions.loadUserGroupForForm
       val userList = UserManagerModel.readAllUser
-      Ok(views.html.newUser(views.html.adminheader("New User ", 3,reportMenu), userForm, groupSeq,userList))
+      Ok(views.html.newUser(views.html.adminheader("New User ", 3,reportMenu), userForm, groupSeq,userList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -103,16 +106,28 @@ object UserManager  extends Controller {
       userForm.bindFromRequest.fold(
       formWithErrors => {        
         val userList = UserManagerModel.readAllUser
-        Ok(views.html.newUser(views.html.adminheader("New User ", 3,reportMenu),formWithErrors,groupSeq, userList))
+        Ok(views.html.newUser(views.html.adminheader("New User ", 3,reportMenu),formWithErrors,groupSeq,
+         userList,
+         views.html.adminfooter()
+         )
+        )
       },
       groupData => {
         val result = UserManagerModel.saveNewUser(groupData.username, groupData.password, groupData.grpid,groupData.email)
         val userList = UserManagerModel.readAllUser
         if(result>0){
-          Ok(views.html.newUser(views.html.adminheader("Created Successfully ", 3,reportMenu), userForm, groupSeq, userList))
+          Ok(views.html.newUser(views.html.adminheader("Created Successfully ", 3,reportMenu), userForm, groupSeq, 
+            userList,
+            views.html.adminfooter()
+            )
+          )
         }
         else{
-          Ok(views.html.newUser(views.html.adminheader("User creation Failed", 3,reportMenu), userForm, groupSeq, userList))
+          Ok(views.html.newUser(views.html.adminheader("User creation Failed", 3,reportMenu), userForm, groupSeq, 
+            userList,
+            views.html.adminfooter()
+            )
+          )
         }
       })
     }
@@ -125,7 +140,12 @@ object UserManager  extends Controller {
   def newUserGroup = Action{implicit request =>
     if(AdminArea.checkSession(request)){
       val userGroupList = UserManagerModel.readAllUserGroup
-      Ok(views.html.newUserGroup(views.html.adminheader("New User Group", 3,reportMenu),userGroupForm,userGroupList))
+      Ok(views.html.newUserGroup(views.html.adminheader("New User Group", 3,reportMenu),userGroupForm,
+        userGroupList,
+        views.html.adminfooter()
+        )
+      )
+
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -205,14 +225,24 @@ object UserManager  extends Controller {
       userGroupForm.bindFromRequest.fold(
       formWithErrors => {
         val userGroupList = UserManagerModel.readAllUserGroup
-        Ok(views.html.newUserGroup(views.html.adminheader("Group Creation Failed", 3,reportMenu),formWithErrors, userGroupList))
+        Ok(views.html.newUserGroup(views.html.adminheader("Group Creation Failed", 3,reportMenu),
+          formWithErrors, 
+          userGroupList,
+          views.html.adminfooter()
+          )
+        )
+
       },
       groupData => {
         val result =  UserManagerModel.saveUserGroup(groupData.groupName)
         val userGroupList = UserManagerModel.readAllUserGroup
         
         if(result > 0){
-          Ok(views.html.newUserGroup(views.html.adminheader("Successfully updated", 3,reportMenu), userGroupForm, userGroupList))
+          Ok(views.html.newUserGroup(views.html.adminheader("Successfully updated", 3,reportMenu), userGroupForm,
+            userGroupList,
+            views.html.adminfooter()
+           )
+          )
         }
         else{
           Ok("Updation Error")
@@ -231,7 +261,11 @@ object UserManager  extends Controller {
       val result= UserManagerModel.deleteUserGroup(hashId)
       val userGroupList = UserManagerModel.readAllUserGroup
       if(result>0){        
-    	  Ok(views.html.newUserGroup(views.html.adminheader("User Group Deleted", 3,reportMenu), userGroupForm, userGroupList))
+    	  Ok(views.html.newUserGroup(views.html.adminheader("User Group Deleted", 3,reportMenu), userGroupForm,
+          userGroupList,
+          views.html.adminfooter()
+          )
+        )
       }
       else{
         Redirect(routes.AdminArea.dashboard()).flashing(
@@ -249,7 +283,11 @@ object UserManager  extends Controller {
       val result= UserManagerModel.deleteUser(hashId)
       val userList = UserManagerModel.readAllUser
       val groupSeq = GeneralFunctions.loadUserGroupForForm
-      Ok(views.html.newUser(views.html.adminheader("Deleted Successfully ", 3,reportMenu), userForm, groupSeq, userList))
+      Ok(views.html.newUser(views.html.adminheader("Deleted Successfully ", 3,reportMenu), userForm, groupSeq, 
+        userList,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -261,7 +299,12 @@ object UserManager  extends Controller {
     if(AdminArea.checkSession(request)){
       val userGroupSeq = GeneralFunctions.loadUserGroupForForm
       val reports = GeneralFunctions.loadReportMenuItems
-      Ok(views.html.assignPrevilage(views.html.adminheader("Assign Previlage to Users",3,reportMenu),assignPrevilageForm,userGroupSeq,reports))
+      Ok(views.html.assignPrevilage(views.html.adminheader("Assign Previlage to Users",3,reportMenu),
+        assignPrevilageForm,
+        userGroupSeq,reports,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -273,7 +316,11 @@ object UserManager  extends Controller {
       val userGroupSeq = GeneralFunctions.loadUserGroupForForm
       val reports = GeneralFunctions.loadReportMenuItems
       
-      Ok(views.html.removePrivilage(views.html.adminheader("Remove Previlage to Users",3,reportMenu),userGroupSeq))
+      Ok(views.html.removePrivilage(views.html.adminheader("Remove Previlage to Users",3,reportMenu),
+        userGroupSeq,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))

@@ -142,7 +142,12 @@ object AdminArea extends Controller {
       
       val dataMap = Map("accountType" -> result.accountType, "accountTitle" -> result.accountTitle, "tablename" -> result.tablename, "accessKey" -> result.accessKey, "accessSecret" -> result.accessSecret, "consumerKey" -> result.consumerKey, "consumerSecret" -> result.consumerSecret, "keywords" -> result.keywords)
       val formForEdit = configurationForm.bind(dataMap)
-      Ok(views.html.editdatasource(views.html.adminheader("Edit DataSource Configuration ",2,reportMenu),formForEdit, hashId))
+      Ok(views.html.editdatasource(views.html.adminheader("Edit DataSource Configuration ",2,reportMenu),
+        formForEdit, 
+        hashId,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Redirect(routes.Application.index()).flashing(
@@ -196,7 +201,11 @@ object AdminArea extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val result= AdminModel.deleteDataSource(hashId)
       val dataSource = AdminModel.readAllDataSource
-      Ok(views.html.datasourcelist(views.html.adminheader("Data Source List | QSenti",2,reportMenu),dataSource))
+      Ok(views.html.datasourcelist(views.html.adminheader("Data Source List | QSenti",2,reportMenu),
+        dataSource,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Redirect(routes.Application.index()).flashing(
@@ -211,7 +220,12 @@ object AdminArea extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
       configurationForm.bindFromRequest.fold(
       formWithErrors => {
-        BadRequest(views.html.editdatasource(views.html.adminheader("Configuration Error",2,reportMenu),formWithErrors,hashId))
+        BadRequest(views.html.editdatasource(views.html.adminheader("Configuration Error",2,reportMenu),
+          formWithErrors,
+          hashId,
+          views.html.adminfooter()
+          )
+        )
       },
       configurationData => {
         val result = AdminModel.updateConfiguration(configurationData.accountType, configurationData.accountTitle, configurationData.accessKey, configurationData.accessSecret, configurationData.consumerKey, configurationData.consumerSecret, configurationData.keywords, configurationData.tablename,hashId)
@@ -242,7 +256,11 @@ object AdminArea extends Controller {
     if(checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val dataSource = AdminModel.readAllDataSource
-      Ok(views.html.datasourcelist(views.html.adminheader("Data Source List | QSenti",2,reportMenu),dataSource))
+      Ok(views.html.datasourcelist(views.html.adminheader("Data Source List | QSenti",2,reportMenu),
+        dataSource,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Redirect(routes.Application.index()).flashing(
@@ -256,7 +274,11 @@ object AdminArea extends Controller {
     if(checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val result = AdminModel.readSingleDataSource(hashId) 
-      Ok(views.html.dataSourceDetailedView(views.html.adminheader("QSenti | Data Source Detailed View ", 0,reportMenu),result))
+      Ok(views.html.dataSourceDetailedView(views.html.adminheader("QSenti | Data Source Detailed View ", 0,reportMenu),
+        result,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Redirect(routes.Application.index()).flashing(
@@ -441,7 +463,11 @@ object AdminArea extends Controller {
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val sourceSeq = GeneralFunctions.loadDataSourcesForForm
       val scheduledRecords = AdminModel.readAllAnalysisSchedule      
-      Ok(views.html.scheduleAnalysis(views.html.adminheader("Schedule Analysis", 2,reportMenu), scheduleAnalysisForm, sourceSeq, scheduledRecords))     
+      Ok(views.html.scheduleAnalysis(views.html.adminheader("Schedule Analysis", 2,reportMenu),
+       scheduleAnalysisForm, sourceSeq, scheduledRecords,
+       views.html.adminfooter()
+       )
+      )     
     }
     else{
       Redirect(routes.Application.index()).flashing(
@@ -458,7 +484,11 @@ object AdminArea extends Controller {
       formWithErrors => {  
         
         val scheduledRecords = AdminModel.readAllAnalysisSchedule
-        BadRequest(views.html.scheduleAnalysis(views.html.adminheader("Schedule Analysis Error",2,reportMenu),formWithErrors, sourceSeq, scheduledRecords))
+        BadRequest(views.html.scheduleAnalysis(views.html.adminheader("Schedule Analysis Error",2,reportMenu),
+          formWithErrors, sourceSeq, scheduledRecords,
+          views.html.adminfooter()
+          )
+        )
       },
       scheduleData => {
         try{
@@ -487,7 +517,10 @@ object AdminArea extends Controller {
           /*----------------------------------------*/
           val scheduledRecords = AdminModel.readAllAnalysisSchedule  
           if(result>0){
-             Ok(views.html.scheduleAnalysis(views.html.adminheader("Successfully Saved",2,reportMenu),scheduleAnalysisForm, sourceSeq, scheduledRecords)) 
+             Ok(views.html.scheduleAnalysis(views.html.adminheader("Successfully Saved",2,reportMenu),
+              scheduleAnalysisForm, sourceSeq, scheduledRecords,views.html.adminfooter()
+              )
+             ) 
           }
           else{
             Ok("Schedule Process Failed")
@@ -512,7 +545,11 @@ object AdminArea extends Controller {
       val result= AdminModel.deleteAnalysisSchedule(hashId)
       val sourceSeq = GeneralFunctions.loadDataSourcesForForm
       val scheduledRecords = AdminModel.readAllAnalysisSchedule      
-      Ok(views.html.scheduleAnalysis(views.html.adminheader("Schedule Analysis", 2,reportMenu), scheduleAnalysisForm, sourceSeq, scheduledRecords))
+      Ok(views.html.scheduleAnalysis(views.html.adminheader("Schedule Analysis", 2,reportMenu), 
+        scheduleAnalysisForm, sourceSeq, scheduledRecords,
+        views.html.adminfooter()
+        )
+      )
     }
     else{
       Redirect(routes.Application.index()).flashing(
