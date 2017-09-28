@@ -24,8 +24,16 @@
               <div class="col col-sm-6">
                
               @helper.form(action = routes.WebServices.doCreateServiceAPI){
-                @helper.inputText(webServiceAPIForm("serviceName"), '_label -> "Service Name", '_showConstraints -> false, 'required -> "required")
-                @helper.textarea(webServiceAPIForm("serviceQry"), '_label -> "Query", '_showConstraints -> false, 'required -> "required")                
+                 @helper.inputText(webServiceAPIForm("serviceName"), 
+                 '_label -> "Service Name", 
+                 '_showConstraints -> false, 
+                 'required -> "required"
+              )
+              @helper.textarea(webServiceAPIForm("serviceQry"), 
+                 '_label -> "Query", 
+                 '_showConstraints -> false, 
+                 'required -> "required"
+              )                
                <input type="submit" value="Submit" class="btn btn-primary">
               }
              
@@ -42,7 +50,7 @@
         </div>
 
 
-    </section><!-- /.content -->
+    </section>
 
 
 

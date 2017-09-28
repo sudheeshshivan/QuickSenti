@@ -1,7 +1,113 @@
 @import controllers._
 @(adminheader : Html, dataSourceList : List[ConfigurationInfoList], adminfooter : Html )
-	@adminheader
-        <div class="admin-outer">
+@adminheader
+
+<section class="content">            
+                    
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Bordered Table</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <table class="table table-bordered">
+                        <tbody><tr>
+                            <th style="width: 10px">#</th>
+                            <th>Data Source</th>
+                            <th>Progress</th>
+                            <th style="width: 40px">Status</th>
+                        </tr>
+
+                        @dataSourceList.map { config =>
+
+                            <tr>
+                            <td>1.</td>
+                            <td>
+                                <a href='@routes.AdminArea.dataSourceDetailedView(GeneralFunctions.getMD5Hash(config.dsid.toString))'> @config.accountTitle 
+                                </a>
+                            </td>
+
+                            <td>
+
+                                <a href="@routes.AdminArea.updateStreamingStatus(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary">  
+
+                                @if(config.processid > 0){
+                                    Stop Streaming
+                                } else {
+                                    Start Streaming
+                                } 
+                                </a>
+                                <a href="@routes.AdminArea.deleteDataSource(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-danger"> Delete </a>
+                                
+                            </td>
+                            <td>
+
+                                @if(config.processid > 0){ 
+                                    <span class="badge bg-green">Running</span>
+                                } else {
+                                    <span class="badge bg-red">Stopped</span>
+                                }
+
+                            </td>
+                            </tr>
+
+<!--                             <tr>                            
+                                <td>
+                                    <a href='@routes.AdminArea.dataSourceDetailedView(GeneralFunctions.getMD5Hash(config.dsid.toString))'> @config.accountTitle </a> 
+                                </td> -->
+
+<!--                                 <td>@if(config.processid > 0){ <img src="@routes.Assets.at("images/running_icon.png")" width="32" height="32" /> } else {<img src="@routes.Assets.at("images/stop_icon.png")" width="32" height="32" /> }</td>
+
+                                <td><a href="@routes.AdminArea.updateStreamingStatus(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary right">  @if(config.processid > 0){Stop Streaming} else {Start Streaming} </a></td>
+                                <td><a href="@routes.AdminArea.deleteDataSource(GeneralFunctions.getMD5Hash(config.dsid.toString))" class="btn btn-primary right">  Delete </a></td> -->
+                            <!-- </tr> -->
+                        } 
+
+
+
+
+<!--                         <tr>
+                            <td>2.</td>
+                            <td>Clean database</td>
+                            <td>
+                                <div class="progress xs">
+                                    <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-yellow">70%</span></td>
+                        </tr>
+                        <tr>
+                            <td>3.</td>
+                            <td>Cron job running</td>
+                            <td>
+                                <div class="progress xs progress-striped active">
+                                    <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-light-blue">30%</span></td>
+                        </tr>
+                        <tr>
+                            <td>4.</td>
+                            <td>Fix and squish bugs</td>
+                            <td>
+                                <div class="progress xs progress-striped active">
+                                    <div class="progress-bar progress-bar-success" style="width: 90%"></div>
+                                </div>
+                            </td>
+                            <td><span class="badge bg-green">90%</span></td>
+                        </tr> -->
+                    </tbody></table>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+    </div>
+</section>
+
+@adminfooter
+
+<!--         <div class="admin-outer">
         	<div class="panel panel-primary">
         		<div class="panel-heading">Data Source List</div>
         		<div class="panel-body">
@@ -31,7 +137,7 @@
         
         
         </div>
-@adminfooter
+@adminfooter -->
 
                 <!-- <div class="row">
                         <div class="col-xs-12">

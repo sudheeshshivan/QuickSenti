@@ -32,7 +32,7 @@
 	<div class="row">
 
 		<div class="col-md-8 col-md-offset-2">
-							
+			@helper.form(action = routes.AdminArea.doConfiguration()){				
 			<!-- general form elements disabled -->
 			<div class="box box-solid">
 				<!-- /.box-header -->
@@ -155,6 +155,7 @@
 
 					</form>
 				</div><!-- /.box-body -->
+				}
 			</div><!-- /.box -->
 
 		</div> <!-- /.column -->
