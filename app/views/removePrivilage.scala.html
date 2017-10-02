@@ -1,17 +1,63 @@
 @(adminHeader : Html, userGroupSeq : Seq[(String,String)], adminfooter :Html)
-	@adminHeader
-		<div class="admin-outer">
-			<div class="input-group"  style="width:500px; margin:auto;">
-				<span class="input-group-addon">Select Page : </span>
-				
-				<select class="form-control" onchange="readPrivilagedReport(this.value);">
-					@userGroupSeq.map{ userGroup =>
-					    <option value="@if(!userGroup._1.isEmpty){@GeneralFunctions.getMD5Hash(userGroup._1)}">@userGroup._2</option>
-					}
-				</select>
-			</div>
-			<div id="outputHolder" style="width:500px; margin:auto;"></div>
-		</div>
+
+@adminHeader
+
+<section class="content-header">
+	<h1>
+		Remove Privilages
+	</h1>
+</section>
+
+<section class="content">            
+					
+	<div class="row">
+
+		<div class="col col-md-8 col-md-offset-2">
+
+			<div class="box box-primary">
+
+				<div class="box-header">
+						<h3 class="box-title">Remove User Groups Privilages to Datasource</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+
+					<label for="user-group-field">Select User Group</label>
+					<select class="form-control" onchange="readPrivilagedReport(this.value);">
+						@userGroupSeq.map{ userGroup =>
+						    <option value="	
+						    	@if(!userGroup._1.isEmpty){
+						    		@GeneralFunctions.getMD5Hash(userGroup._1)
+						    	}">@userGroup._2
+						    </option>
+						}
+					</select>
+					<div class="input-group" id="outputHolder" style="width:500px; margin:auto;"></div>
+
+					<!-- <div class="admin-outer">
+						<div class="input-group"  style="width:500px; margin:auto;">
+							<span class="input-group-addon">Select Page : </span>
+							
+							<select class="form-control" onchange="readPrivilagedReport(this.value);">
+								@userGroupSeq.map{ userGroup =>
+								    <option value="@if(!userGroup._1.isEmpty){@GeneralFunctions.getMD5Hash(userGroup._1)}">@userGroup._2</option>
+								}
+							</select>
+						</div>
+						<div id="outputHolder" style="width:500px; margin:auto;"></div>
+					</div> -->
+
+				</div><!-- /.box-body -->
+
+			</div><!-- /.box -->
+
+		</div> <!-- /.column -->
+
+	</div> <!-- /.row -->
+
+</section>
+
+		
 	<!-- </body> -->
 	<script type="text/javascript">
 	function readPrivilagedReport(hashId){

@@ -1,7 +1,5 @@
 package controllers
 
-
-
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -25,7 +23,6 @@ import org.quartz.JobBuilder.newJob
 import org.quartz.TriggerBuilder.newTrigger
 import org.quartz.CronScheduleBuilder._
 import java.util.Date
-
 
 case class WebServiceInfo(serviceName : String , serivceQry : String)
 case class UploadViewInfo(service : Int, linkTitle : String)
@@ -840,6 +837,24 @@ object WebServices extends Controller {
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
     }
   }
+
+  def apiReadDatasourceForPrevilage() = Action { implicit request =>
+    if(AdminArea.checkSession(request)){
+      
+      var reportDisplayList : List[(String,Int)] = List()
+
+      val reportList = AdminModel.readAllDataSource
+      for(reportPage <-reportList){
+        reportDisplayList = (reportPage.accountTitle,reportPage.dsid) :: reportDisplayList
+      }
+      Ok(views.html.reportsForPrevilage(reportDisplayList))
+    }
+    else{
+      Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
+    }
+  }
+
+
   
   def doRemoveGraphFromPage = Action { implicit request =>
     if(AdminArea.checkSession(request)){

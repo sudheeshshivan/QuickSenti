@@ -37,6 +37,7 @@ GET		/webService/remove/graph/:hashId					controllers.WebServices.doRemoveGraph(
 GET		/user/assign/previlage						controllers.UserManager.assignUserPrevilage
 GET		/user/remove/previlage						controllers.UserManager.removeUserPrevilage
 GET		/webService/api/read/reportsForPrevilage/:reportType controllers.WebServices.apiReadReportForPrevilage(reportType : Int)
+GET		/webService/api/read/datasourceForPrevilage controllers.WebServices.apiReadDatasourceForPrevilage()
 GET		/userArea											controllers.UserArea.dashboard
 GET		/WebService/reports/show_page/content/:hashId/:export		controllers.WebServices.loadReportPageContent(hashId : String, export : String)
 GET		/WebService/reports/show/content/:hashId/:export		controllers.WebServices.loadReportViewContent(hashId : String, export : String)
@@ -60,6 +61,7 @@ POST		/WebService/read/chartWithFilters				controllers.WebServices.chartApiGener
 POST		/webService/doRemove/graph/fromPage				controllers.WebServices.doRemoveGraphFromPage
 POST		/user/doRemove/prilivalge/fromGroup				controllers.UserManager.doRemovePrivilage
 POST		/user/doAssign/previlage						controllers.UserManager.doAssignUserPrevilage
+POST		/user/doAssign/previlages						controllers.UserManager.doAssignUserPrevilages
 POST 		/WebService/doSchedule/reportBursting			controllers.WebServices.doScheduleReportBursting
 
 # Map static resources from the /public folder to the /assets URL path

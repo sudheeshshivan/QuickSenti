@@ -10,7 +10,6 @@ import play.api.libs.json._
 import models.WebServiceModel
 import org.apache.commons.mail.EmailAttachment
 
-
 import scala.sys.process._
 /*
 import io.github.cloudify.scala.spdf._
@@ -30,10 +29,11 @@ import play.libs.mailer.MailerPlugin
 import play.api.libs.mailer.MailerPlugin*/
 
 
-
 case class UserGroupInfo(groupName : String)
 case class UserInfo(grpid : Int, username : String, password : String, email : String)
 case class AssignPrevilageInfo(user : Int, reportType : Int, page : List[String])
+
+case class AssignPrevilagesInfo(user : Int, page : List[String])
 
 object UserManager  extends Controller {
 
@@ -73,6 +73,13 @@ object UserManager  extends Controller {
         "reportType" -> number,
         "page" -> list(text)
     )(AssignPrevilageInfo.apply)(AssignPrevilageInfo.unapply)
+  )
+
+  val assignPrevilagesForm = Form(
+    mapping(
+        "user" -> number,
+        "page" -> list(text)
+    )(AssignPrevilagesInfo.apply)(AssignPrevilagesInfo.unapply)
   )
   
   
@@ -155,16 +162,16 @@ object UserManager  extends Controller {
   
   def userList = Action {
     
-    import play.api.libs.mailer._
-    import play.api.Play.current    
-    import java.io.File
-    import io.github.cloudify.scala.spdf._
-    import java.net._
+    // import play.api.libs.mailer._
+    // import play.api.Play.current    
+    // import java.io.File
+    // import io.github.cloudify.scala.spdf._
+    // import java.net._
     
-    val myTask  = Runtime.getRuntime.exec("mkdir /home/qburst/scala/samplDir")
-    val someData = myTask.waitFor()
-    Logger.info("Some Sample command line execution Started")
-    Logger.info(someData.toString())
+    // val myTask  = Runtime.getRuntime.exec("mkdir /home/qburst/scala/samplDir")
+    // val someData = myTask.waitFor()
+    // Logger.info("Some Sample command line execution Started")
+    // Logger.info(someData.toString())
     
     
 //    USIGN sPDF Libarary
@@ -216,10 +223,6 @@ object UserManager  extends Controller {
     Ok("Users list")     
   }
   
-  
-  
-  
-  
   def doNewUserGroup = Action { implicit request =>      
     if(AdminArea.checkSession(request)){
       userGroupForm.bindFromRequest.fold(
@@ -253,8 +256,6 @@ object UserManager  extends Controller {
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
     }
   }
-  
-  
   
   def deleteUserGroup(hashId : String) = Action {implicit request =>    
     if(AdminArea.checkSession(request)){
@@ -299,12 +300,25 @@ object UserManager  extends Controller {
     if(AdminArea.checkSession(request)){
       val userGroupSeq = GeneralFunctions.loadUserGroupForForm
       val reports = GeneralFunctions.loadReportMenuItems
+
       Ok(views.html.assignPrevilage(views.html.adminheader("Assign Previlage to Users",3,reportMenu),
-        assignPrevilageForm,
+        assignPrevilagesForm,
         userGroupSeq,reports,
         views.html.adminfooter()
         )
       )
+
+      // val dataSources = GeneralFunctions.loadDataSources
+
+      // Ok(
+      //   views.html.assignPrevilage(
+      //     views.html.adminheader("Assign Previlage to Users",3,reportMenu),
+      //     assignPrevilagesForm,
+      //     userGroupSeq,
+      //     // dataSources,
+      //     views.html.adminfooter()
+      //   )
+      // )
     }
     else{
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
@@ -345,7 +359,7 @@ object UserManager  extends Controller {
     if(AdminArea.checkSession(request)){
       assignPrevilageForm.bindFromRequest().fold(
         formWithErrors => 
-          Ok(assignPrevilageForm.data.toString())
+          Ok(formWithErrors.toString())
         , previlageData => {
       	  var result = 0
     			previlageData.page.map{ pageId =>
@@ -366,6 +380,36 @@ object UserManager  extends Controller {
       Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
     }
   }
+
+
+  def doAssignUserPrevilages = Action { implicit request =>
+    if(AdminArea.checkSession(request)){
+      assignPrevilagesForm.bindFromRequest().fold(
+        formWithErrors => 
+          Ok("helloo --> "+formWithErrors.toString())
+        , previlageData => {
+          var result = 0
+          previlageData.page.map{ pageId =>
+            result += UserManagerModel.saveUserPrevilages(previlageData.user, pageId)
+          }   
+          if(result>0){
+            Redirect(routes.UserManager.assignUserPrevilage()).flashing(
+                  "success" -> "Previlage assigned  successfully")
+          }
+          else{
+            Redirect(routes.UserManager.assignUserPrevilage()).flashing(
+                  "error" -> "Previlage Assignment failed, Some Error occurred")
+          }            
+        }
+      )
+    }
+    else{
+      Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
+    }
+  }
+
+
+
 }
 
 

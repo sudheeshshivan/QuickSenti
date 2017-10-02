@@ -24,7 +24,6 @@ object GeneralFunctions {
     return sourceSeq
   } 
   
-  
   def loadUserGroupForForm : Seq[(String,String)] = {    
     val groupList = UserManagerModel.readAllUserGroup
     var groupSeq = Seq(""->"Select a Group")
@@ -75,7 +74,17 @@ object GeneralFunctions {
     }
     return reportMenuList
   }
-  
+
+  // def loadDataSources : List[(String,Int)] = {    
+  //   val dataSources = AdminModel.readAllDataSource
+
+  //   var dataSourceList : List[(String,Int)] = List()
+
+  //   for(dataSource <- dataSources){
+  //     dataSourceList = (dataSource.accountTitle,dataSource.dsid) :: dataSourceList
+  //   }
+  //   return dataSourceList
+  // }
   
   def loadReportMenuItemsForUser(userGroup : String) : List[(String,Int,Int)] = { 
     

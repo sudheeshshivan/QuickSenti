@@ -111,6 +111,14 @@ object UserManagerModel {
       ).executeUpdate()
     return result
   }
+
+  def saveUserPrevilages(groupId : Int, datasourceId : String) : Int = DB.withConnection { implicit c =>
+    val result = SQL("INSERT INTO userprevilages(groupid,datasource) VALUES ({groupId},{datasourceId})").on(
+        'groupId  -> groupId,
+        'datasourceId  -> datasourceId
+      ).executeUpdate()
+    return result
+  }
   
   def readAllUserGroup : List[UserGroup] = DB.withConnection { implicit c =>
     SQL("SELECT * FROM tblusergroup").as(userGroup *)

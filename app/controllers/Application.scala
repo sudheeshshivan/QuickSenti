@@ -14,13 +14,28 @@ import play.api.data._
 import play.api.data.Forms._
 import org.quartz.JobKey
 
-
 object Application extends Controller {
+
+	def checkSession (req : Request[AnyContent]) : Boolean = {
+        req.session.get("uid").map { user =>
+            val group = req.session.get("usergroup").get
+            if (group.toInt==0) {        
+                 return true
+            } else {
+                return false
+            }
+        }.getOrElse {
+          return false
+        } 
+    }
   
-  def index = Action {implicit request =>
+ 	def index = Action {implicit request =>
 
-    Ok(views.html.main("QuickSenti | Login", Login.loginForm))
-    // Ok("Hello ...")
-  }
+    	if(checkSession(request)){
+    		Redirect("/adminArea")
+        } else {
+            Ok(views.html.main("QuickSenti | Login", Login.loginForm))
+        }
 
+  	}
 }

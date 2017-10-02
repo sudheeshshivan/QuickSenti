@@ -1,6 +1,5 @@
 package controllers
 
-
 import play.api._
 import play.api.mvc._
 import play.api.data._
@@ -28,48 +27,40 @@ import org.quartz.TriggerBuilder.newTrigger
 import org.quartz.CronScheduleBuilder._
 import java.util.Date
 
-
-
 case class ConfigurationInfo(accountType : String, accountTitle : String, accessKey : String, accessSecret : String, consumerKey : String, consumerSecret : String, keywords : String,tablename : String)
 
 case class ScheduleAnalysisInfo(dsid : Int, scheduleHr : Int, scheduleMin : Int)
 
 object AdminArea extends Controller {
-
-
+   
    /* Form Models Declaration */
 
    //  Form For defining new datasource
     val configurationForm = Form(
         mapping(
-          "accountType"    -> nonEmptyText,
-          "accountTitle"   -> nonEmptyText,
-          "accessKey"      -> nonEmptyText,
-          "accessSecret"   -> nonEmptyText,
-          "consumerKey"    -> nonEmptyText,
-          "consumerSecret" -> nonEmptyText,
-          "keywords"       -> nonEmptyText,
-          "tablename"      -> nonEmptyText
-      )(ConfigurationInfo.apply)(ConfigurationInfo.unapply)
+            "accountType"    -> nonEmptyText,
+            "accountTitle"   -> nonEmptyText,
+            "accessKey"      -> nonEmptyText,
+            "accessSecret"   -> nonEmptyText,
+            "consumerKey"    -> nonEmptyText,
+            "consumerSecret" -> nonEmptyText,
+            "keywords"       -> nonEmptyText,
+            "tablename"      -> nonEmptyText
+        )(ConfigurationInfo.apply)(ConfigurationInfo.unapply)
     )
-
-
 
    //  Form for scheduling analysis part
    val scheduleAnalysisForm = Form(
-      mapping(
-          "dsid"  -> number.verifying("Error ", !_.<(0) ),
-          "scheduleHr" -> number(min = 1, max = 24),
-          "scheduleMin" -> number(min = 1, max = 60)
-      )(ScheduleAnalysisInfo.apply)(ScheduleAnalysisInfo.unapply)
-  )
+        mapping(
+            "dsid"  -> number.verifying("Error ", !_.<(0) ),
+            "scheduleHr" -> number(min = 1, max = 24),
+            "scheduleMin" -> number(min = 1, max = 60)
+        )(ScheduleAnalysisInfo.apply)(ScheduleAnalysisInfo.unapply)
+    )
 
    /* Form Model Declaration Ends */
    
-
    //  Menu for headers
-
-
    def checkSession (req : Request[AnyContent]) : Boolean = {
         req.session.get("uid").map { user =>
             val group = req.session.get("usergroup").get
@@ -83,8 +74,6 @@ object AdminArea extends Controller {
         } 
     }
 
-
-
     def checkSessionWithMultipart (req : Session ) : Boolean = {
         req.get("uid").map { user =>
           return true
@@ -93,125 +82,116 @@ object AdminArea extends Controller {
       } 
     }
 
+    def dashboard = Action {implicit request =>
+        
+        if(checkSession(request)){      
+            val reportMenu = GeneralFunctions.loadReportMenuItems   
+            Ok(
+                views.html.dashboard2(
+                    views.html.adminheader("Admin area | Dash Board",1,reportMenu), 
+                    views.html.adminfooter()
+                )
+            )  
+        } else {      
+            Redirect(routes.Application.index()).flashing(
+                "error" -> "Your last session expired, Please Login again ")
+        }
+    }  
 
-def dashboard = Action {implicit request =>
-    if(checkSession(request)){      
-      val reportMenu = GeneralFunctions.loadReportMenuItems
-      //      Ok(play.core.PlayVersion.current.toString())
-      // Ok(views.html.dashboard(views.html.adminheader("Admin area | Dash Board",1,reportMenu)))   
-      Ok(
-        views.html.dashboard2(
-          views.html.adminheader("Admin area | Dash Board",1,reportMenu), 
-          views.html.adminfooter()
-      )
-    )  
-  }
-  else{      
-      Redirect(routes.Application.index()).flashing(
-          "error" -> "Your last session expired, Please Login again ")
-  }
-}  
-
-
-def dataSource = Action {implicit request =>
-    if(checkSession(request)){
-      val reportMenu = GeneralFunctions.loadReportMenuItems
-      Ok(
-          views.html.datasource(
-            views.html.adminheader("Data Source Configuration",2,reportMenu), 
-            configurationForm,
-            "",
-            views.html.adminfooter()
-        )
-      )
-  }
-  else{
-      Redirect(routes.Application.index()).flashing(
-          "error" -> "Your last session expired, Please Login again ")
-  }
-}
-
-
-
-def editDataSource(hashId : String) = Action {  implicit request =>
-    if(checkSession(request)){
-      val reportMenu = GeneralFunctions.loadReportMenuItems
-      val result = AdminModel.readSingleDataSource(hashId).head
-      
-      val dataMap = Map("accountType" -> result.accountType, "accountTitle" -> result.accountTitle, "tablename" -> result.tablename, "accessKey" -> result.accessKey, "accessSecret" -> result.accessSecret, "consumerKey" -> result.consumerKey, "consumerSecret" -> result.consumerSecret, "keywords" -> result.keywords)
-      val formForEdit = configurationForm.bind(dataMap)
-      Ok(views.html.editdatasource(views.html.adminheader("Edit DataSource Configuration ",2,reportMenu),
-        formForEdit, 
-        hashId,
-        views.html.adminfooter()
-    )
-  )
-  }
-  else{
-      Redirect(routes.Application.index()).flashing(
-          "error" -> "Your last session expired, Please Login again ")
-  }
-}
-
-
-
-
-def doConfiguration = Action {implicit request =>
-    if(checkSession(request)){
-      val reportMenu = GeneralFunctions.loadReportMenuItems
-      configurationForm.bindFromRequest.fold(
-          formWithErrors => {
-            BadRequest(
-              views.html.datasource(
-                views.html.adminheader("Configuration Error",2,reportMenu),
-                formWithErrors,
-                "",
-                views.html.adminfooter()
-            )
-          )
-        },
-        configurationData => {
-            val result = AdminModel.saveConfiguration(configurationData.accountType, configurationData.accountTitle, configurationData.accessKey, configurationData.accessSecret, configurationData.consumerKey, configurationData.consumerSecret, configurationData.keywords, configurationData.tablename)
-
-            if(result > 0){
-              Ok(
+    def dataSource = Action {implicit request =>
+        if(checkSession(request)){
+            val reportMenu = GeneralFunctions.loadReportMenuItems
+            Ok(
                 views.html.datasource(
-                  views.html.adminheader("Data Source Configuration",2,reportMenu),
-                  configurationForm,"Configuration Updated Successfully",
-                  views.html.adminfooter()
-              )
+                    views.html.adminheader("Data Source Configuration",2,reportMenu), 
+                    configurationForm,
+                    "",
+                    views.html.adminfooter()
+                )
             )
-          }
-          else{
-              Ok("Updation Error")
-          }
-      })
-  }
-  else{      
-      Redirect(routes.Application.index()).flashing(
-          "error" -> "Your last session expired, Please Login again ")
-  }
-}
+        } else {
+            Redirect(routes.Application.index()).flashing(
+                "error" -> "Your last session expired, Please Login again "
+            )
+        }
+    }
 
+    def editDataSource(hashId : String) = Action {  implicit request =>
+        if(checkSession(request)){
+            val reportMenu = GeneralFunctions.loadReportMenuItems
+            val result = AdminModel.readSingleDataSource(hashId).head
 
-def deleteDataSource(hashId : String) = Action {implicit request =>    
-    if(checkSession(request)){
-      val reportMenu = GeneralFunctions.loadReportMenuItems
-      val result= AdminModel.deleteDataSource(hashId)
-      val dataSource = AdminModel.readAllDataSource
-      Ok(views.html.datasourcelist(views.html.adminheader("Data Source List | QSenti",2,reportMenu),
-        dataSource,
-        views.html.adminfooter()
-    )
-  )
-  }
-  else{
-      Redirect(routes.Application.index()).flashing(
-          "error" -> "Your last session expired, Please Login again ")
-  }   
-}
+            val dataMap = Map("accountType" -> result.accountType, "accountTitle" -> result.accountTitle, "tablename" -> result.tablename, "accessKey" -> result.accessKey, "accessSecret" -> result.accessSecret, "consumerKey" -> result.consumerKey, "consumerSecret" -> result.consumerSecret, "keywords" -> result.keywords)
+            val formForEdit = configurationForm.bind(dataMap)
+      
+            Ok(views.html.editdatasource(
+                    views.html.adminheader("Edit DataSource Configuration ",2,reportMenu),
+                    formForEdit, 
+                    hashId,
+                    views.html.adminfooter()
+                )
+            )
+        } else {
+            Redirect(routes.Application.index()).flashing(
+                "error" -> "Your last session expired, Please Login again "
+            )
+        }
+    }
 
+    def doConfiguration = Action {implicit request =>
+        if(checkSession(request)){
+            val reportMenu = GeneralFunctions.loadReportMenuItems
+            configurationForm.bindFromRequest.fold(
+                formWithErrors => {
+                    BadRequest(
+                        views.html.datasource(
+                            views.html.adminheader("Configuration Error",2,reportMenu),
+                            formWithErrors,
+                            "",
+                            views.html.adminfooter()
+                        )
+                    )
+                },
+                configurationData => {
+                    val result = AdminModel.saveConfiguration(configurationData.accountType, configurationData.accountTitle, configurationData.accessKey, configurationData.accessSecret, configurationData.consumerKey, configurationData.consumerSecret, configurationData.keywords, configurationData.tablename)
 
+                    if(result > 0){
+                        Ok(
+                            views.html.datasource(
+                                views.html.adminheader("Data Source Configuration",2,reportMenu),
+                                configurationForm,"Configuration Updated Successfully",
+                                views.html.adminfooter()
+                            )
+                        )
+                    } else {
+                        Ok("Updation Error")
+                    }
+                }
+            )
+        } else {      
+            Redirect(routes.Application.index()).flashing(
+                "error" -> "Your last session expired, Please Login again "
+            )
+        }
+    }
+
+    def deleteDataSource(hashId : String) = Action {implicit request =>    
+        if(checkSession(request)){
+            val reportMenu = GeneralFunctions.loadReportMenuItems
+            val result= AdminModel.deleteDataSource(hashId)
+            val dataSource = AdminModel.readAllDataSource
+            Ok(views.html.datasourcelist(
+                    views.html.adminheader("Data Source List | QSenti",2,reportMenu),
+                    dataSource,
+                    views.html.adminfooter()
+                )
+            )
+        } else {
+            Redirect(routes.Application.index()).flashing(
+                "error" -> "Your last session expired, Please Login again "
+            )
+        }   
+    }
 
 def doUpdateConfiguration(hashId : String) = Action {implicit request =>    
     if(checkSession(request)){
@@ -304,37 +284,67 @@ def updateStreamingStatus(hashId : String ) = Action { implicit request =>
           confFile.createNewFile()
       }
       val writer = new PrintWriter(confFile)
-      writer.write("""
+      // writer.write("""
 
 
-        TwitterAgent.sources = Twitter
-        TwitterAgent.channels = MemChannel
-        TwitterAgent.sinks = HDFS
+      //   TwitterAgent.sources = Twitter
+      //   TwitterAgent.channels = MemChannel
+      //   TwitterAgent.sinks = HDFS
         
-        TwitterAgent.sources.Twitter.type = com.qburst.twittersource.TwitterSampleStreamSource
-        TwitterAgent.sources.Twitter.channels = MemChannel
-        TwitterAgent.sources.Twitter.consumer.key = """  + configList.consumerKey + """
-        TwitterAgent.sources.Twitter.consumer.secret = """  + configList.consumerSecret + """
-        TwitterAgent.sources.Twitter.access.token = """  + configList.accessKey + """
-        TwitterAgent.sources.Twitter.access.token.secret = """  + configList.accessSecret + """
-        TwitterAgent.sources.Twitter.filter.by = """  + configList.keywords + """
+      //   TwitterAgent.sources.Twitter.type = com.qburst.twittersource.TwitterSampleStreamSource
+      //   TwitterAgent.sources.Twitter.channels = MemChannel
+      //   TwitterAgent.sources.Twitter.consumer.key = """  + configList.consumerKey + """
+      //   TwitterAgent.sources.Twitter.consumer.secret = """  + configList.consumerSecret + """
+      //   TwitterAgent.sources.Twitter.access.token = """  + configList.accessKey + """
+      //   TwitterAgent.sources.Twitter.access.token.secret = """  + configList.accessSecret + """
+      //   TwitterAgent.sources.Twitter.filter.by = """  + configList.keywords + """
         
-        TwitterAgent.sinks.HDFS.channel = MemChannel
-        TwitterAgent.sinks.HDFS.type = hdfs
-        TwitterAgent.sinks.HDFS.hdfs.path = hdfs://localhost:9100/user/twitterSenti/""" + configList.tablename + """
-        TwitterAgent.sinks.HDFS.hdfs.fileType = DataStream
-        TwitterAgent.sinks.HDFS.hdfs.writeFormat = Text
-        TwitterAgent.sinks.HDFS.hdfs.batchSize = 64000
-        TwitterAgent.sinks.HDFS.hdfs.rollSize = 67108864
-        TwitterAgent.sinks.HDFS.hdfs.rollInterval = 3600
-        TwitterAgent.sinks.HDFS.hdfs.rollCount = 0
+      //   TwitterAgent.sinks.HDFS.channel = MemChannel
+      //   TwitterAgent.sinks.HDFS.type = hdfs
+      //   TwitterAgent.sinks.HDFS.hdfs.path = hdfs://localhost:9100/user/twitterSenti/""" + configList.tablename + """
+      //   TwitterAgent.sinks.HDFS.hdfs.fileType = DataStream
+      //   TwitterAgent.sinks.HDFS.hdfs.writeFormat = Text
+      //   TwitterAgent.sinks.HDFS.hdfs.batchSize = 64000
+      //   TwitterAgent.sinks.HDFS.hdfs.rollSize = 67108864
+      //   TwitterAgent.sinks.HDFS.hdfs.rollInterval = 3600
+      //   TwitterAgent.sinks.HDFS.hdfs.rollCount = 0
         
-        TwitterAgent.channels.MemChannel.type = memory
-        TwitterAgent.channels.MemChannel.capacity = 1000000
-        TwitterAgent.channels.MemChannel.transactionCapacity = 10000
+      //   TwitterAgent.channels.MemChannel.type = memory
+      //   TwitterAgent.channels.MemChannel.capacity = 1000000
+      //   TwitterAgent.channels.MemChannel.transactionCapacity = 10000
+
+      //   """)
+
+        writer.write("""
+
+            TwitterAgent.sources = Twitter
+            TwitterAgent.channels = MemChannel
+            TwitterAgent.sinks = HDFS
+
+            TwitterAgent.sources.Twitter.type = org.apache.flume.source.twitter.TwitterSource
+            TwitterAgent.sources.Twitter.channels = MemChannel
+            TwitterAgent.sources.Twitter.consumerKey="""  + configList.consumerKey + """
+            TwitterAgent.sources.Twitter.consumerSecret="""  + configList.consumerSecret + """
+            TwitterAgent.sources.Twitter.accessToken="""  + configList.accessKey + """
+            TwitterAgent.sources.Twitter.accessTokenSecret="""  + configList.accessSecret + """
+            TwitterAgent.sources.Twitter.keywords= """  + configList.keywords + """
+            
+            TwitterAgent.sinks.HDFS.channel = MemChannel
+            TwitterAgent.sinks.HDFS.type = hdfs
+            TwitterAgent.sinks.HDFS.hdfs.path = hdfs://localhost:9000/user/twitterSenti/""" + configList.tablename + """
+            TwitterAgent.sinks.HDFS.hdfs.fileType = DataStream
+            TwitterAgent.sinks.HDFS.hdfs.writeFormat = Text
+            TwitterAgent.sinks.HDFS.hdfs.batchSize = 64000
+            TwitterAgent.sinks.HDFS.hdfs.rollSize = 67108864
+            TwitterAgent.sinks.HDFS.hdfs.rollInterval = 3600
+            TwitterAgent.sinks.HDFS.hdfs.rollCount = 0
+            
+            TwitterAgent.channels.MemChannel.type = memory
+            TwitterAgent.channels.MemChannel.capacity = 1000000
+            TwitterAgent.channels.MemChannel.transactionCapacity = 10000
 
         """)
-      writer.close()
+        writer.close()
       
 
       /*** HBase Table Creation Begins ***/
@@ -353,19 +363,31 @@ def updateStreamingStatus(hashId : String ) = Action { implicit request =>
 
 
       //Create a directory within HDFS
-      val str = "/home/qburst/hadoop-2.6.0/bin/hdfs dfs -mkdir /user/twitterSenti/" + configList.tablename
+      
+      val str = "hdfs dfs -mkdir /user/twitterSenti/" + configList.tablename
+      
+      // val str = "/usr/local/Cellar/hadoop/2.8.1/bin/hdfs dfs -mkdir $HOME/twitterSenti/" + configList.tablename
+      
+
+      Logger.info(str)
+
+      // val str = "/home/qburst/hadoop-2.6.0/bin/hdfs dfs -mkdir /user/twitterSenti/" + configList.tablename
       val startDirectory = Runtime.getRuntime.exec(str)
 
 
-      val myProcess = Runtime.getRuntime.exec("flume-ng agent -n TwitterAgent -c $FLUME_HOME/conf -f public/flume_config/"+configList.filename+".conf")
-      // Starting flume agent with exec      
+      val flumeStr = "flume-ng agent -n TwitterAgent -c $FLUME_HOME/conf -f public/flume_config/"+configList.filename+".conf"
 
+      Logger.info(flumeStr)
+ 
+      val myProcess = Runtime.getRuntime.exec(flumeStr)
+      // Starting flume agent with exec      
 
       //Reading the process id of the flume agent
       val f = myProcess.getClass().getDeclaredField("pid")
       f.setAccessible(true)
-      val pid =f.getInt(myProcess)
+      val pid = f.getInt(myProcess)
 
+      Logger.info(pid.toString())
 
       AdminModel.updateStreamingProcessId(pid, hashId)  
   }      
@@ -387,22 +409,20 @@ def getTrendData(startDate : String , endDate : String)  = Action{implicit reque
         var dateList : List[String] = List.empty
         
         for(report <- result){
-          if(!dateList.contains(report.date)){
-            if(report.sentiment == "Negative" || report.sentiment == "Very negative"){
-              trendData += """
-              {"name":"""" + report.date + """","value":""" + report.percentage * -1 + """},"""
-          }
-          else if(report.sentiment=="Neutral"){
-              trendData += """
-              {"name":"""" + report.date + """","value":""" + (report.percentage * 0) + """},"""            
-          }
-          else{
-              trendData += """
-              {"name":"""" + report.date + """","value":""" + report.percentage + """},"""            
-          }              
-          dateList = dateList.+:(report.date) 
-      }
-  }      
+            if(!dateList.contains(report.date)){
+                if(report.sentiment == "Negative" || report.sentiment == "Very negative"){
+                    trendData += """
+                    {"name":"""" + report.date + """","value":""" + report.percentage * -1 + """},"""
+                } else if(report.sentiment=="Neutral"){
+                    trendData += """
+                    {"name":"""" + report.date + """","value":""" + (report.percentage * 0) + """},"""            
+                } else {
+                    trendData += """
+                    {"name":"""" + report.date + """","value":""" + report.percentage + """},"""            
+                }              
+                dateList = dateList.+:(report.date) 
+            }
+        }      
 
   val pieResult = AdminModel.readPieData(startDate, endDate)        
   var pieChartData = "["
@@ -571,13 +591,13 @@ class MyWorker extends Job {
       val sqoopExitCode = sqoopTask.waitFor()
       if(sqoopExitCode>0){
         Logger.error("Data Transfer From HDFS to PostgreSQL Failed at : " + new Date)
+      }
+      else{
+        Logger.info("Data Moved From HDFS to POstgreSQL Successfully")
+      }
     }
     else{
-        Logger.info("Data Moved From HDFS to POstgreSQL Successfully")
+      Logger.error("Analysis Task Failed at:"+new Date+"\n\t\t Data Transfer from HDFS to PostgreSQL cannot be initiated.")
     }
-}
-else{
-  Logger.error("Analysis Task Failed at:"+new Date+"\n\t\t Data Transfer from HDFS to PostgreSQL cannot be initiated.")
-}
-}
+  }
 }

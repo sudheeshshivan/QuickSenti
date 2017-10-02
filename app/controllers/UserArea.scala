@@ -20,7 +20,6 @@ object UserArea extends Controller {
   def checkSession (req : Request[AnyContent]) : Boolean = {
     req.session.get("uid").map { user =>
       val group = req.session.get("usergroup").get.toInt
-//      println(group)
       if(group!=0){        
         return true
       }
@@ -31,8 +30,6 @@ object UserArea extends Controller {
       return false
     } 
   }
- 
-  
 }
 
  

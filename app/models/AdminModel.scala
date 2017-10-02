@@ -14,13 +14,8 @@ case class SentimentTrend(date : String, sentiment : String , retweetCount : Int
 
 case class AnalysisSchedule(dsid : Int, scheduleHr : Int, scheduleMin : Int, accountTitle : String)
 
-
-
 object AdminModel {
-  
-  
-  
-  
+
   val configuration ={
     get[Int]("dsid")~
     get[String]("accountType")~
@@ -91,9 +86,7 @@ object AdminModel {
       ).executeUpdate()
     return result
   }
-  
-  
-  
+
   def readSingleDataSource(hashId : String ) : List[ConfigurationInfoList] = DB.withConnection { implicit c => 
     SQL("SELECT * FROM tbldatasource WHERE md5(CAST((dsid)AS text))={hashId}").on(
     'hashId  -> hashId    
