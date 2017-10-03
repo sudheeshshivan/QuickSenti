@@ -138,6 +138,22 @@ object AdminArea extends Controller {
         }
     }
 
+    def viewReport = Action { implicit request =>
+      if(checkSession(request)){
+        val reportMenu = GeneralFunctions.loadReportMenuItems
+        val dataSource = AdminModel.readAllDataSource
+        
+        Ok(views.html.viewReport(views.html.adminheader("View Report",4,reportMenu),
+          dataSource,
+          views.html.adminfooter()
+          )
+        )
+      }
+      else{
+        Ok(views.html.main("Session Expired. Please Login",Login.loginForm))
+      }    
+    }
+
     def doConfiguration = Action {implicit request =>
         if(checkSession(request)){
             val reportMenu = GeneralFunctions.loadReportMenuItems
@@ -375,7 +391,7 @@ def updateStreamingStatus(hashId : String ) = Action { implicit request =>
       val startDirectory = Runtime.getRuntime.exec(str)
 
 
-      val flumeStr = "flume-ng agent -n TwitterAgent -c $FLUME_HOME/conf -f public/flume_config/"+configList.filename+".conf"
+      val flumeStr = "flume-ng agent -n TwitterAgent -c $FLUME_HOME/conf -f public/flume_config/"+configList.filename+".conf -Dflume.root.logger=DEBUG,console -Dtwitter4j.streamBaseURL=https://stream.twitter.com/1.1/"
 
       Logger.info(flumeStr)
  
@@ -400,6 +416,7 @@ else{
 }
 
 def getTrendData(startDate : String , endDate : String)  = Action{implicit request =>
+    
     if(checkSession(request)){
       val reportMenu = GeneralFunctions.loadReportMenuItems
       val result = AdminModel.readSentimentTrend(startDate,endDate)
@@ -407,6 +424,8 @@ def getTrendData(startDate : String , endDate : String)  = Action{implicit reque
         var resultMap : Map[String,Int] = Map()
         var trendData ="""{"trendData":[""";
         var dateList : List[String] = List.empty
+
+        Logger.info(result.toString)
         
         for(report <- result){
             if(!dateList.contains(report.date)){
@@ -424,56 +443,56 @@ def getTrendData(startDate : String , endDate : String)  = Action{implicit reque
             }
         }      
 
-  val pieResult = AdminModel.readPieData(startDate, endDate)        
-  var pieChartData = "["
-  var currentSentiment ="" 
-  for(report <- pieResult){          
-      if(currentSentiment==""){
-        currentSentiment = report.sentiment
-        pieChartData += """
-        {
-          "data" : ["""
+        val pieResult = AdminModel.readPieData(startDate, endDate)        
+        var pieChartData = "["
+        var currentSentiment ="" 
+        for(report <- pieResult){          
+            if(currentSentiment==""){
+              currentSentiment = report.sentiment
+              pieChartData += """
+              {
+                "data" : ["""
+            }
+            if(currentSentiment!=report.sentiment){
+              pieChartData = pieChartData.stripPrefix(",").stripSuffix(",").trim()
+              pieChartData += """
+              ],
+              "sentiment":"""" + currentSentiment + """", "value":23
+          },
+          {
+            "data" : ["""
+            currentSentiment = report.sentiment
+        }
+        else if(currentSentiment==report.sentiment){
+          pieChartData += """
+          {
+            "date" : "12-05-2014",
+            "value" : 25
+        },"""
       }
-      if(currentSentiment!=report.sentiment){
-        pieChartData = pieChartData.stripPrefix(",").stripSuffix(",").trim()
-        pieChartData += """
-        ],
-        "sentiment":"""" + currentSentiment + """", "value":23
-    },
-    {
-      "data" : ["""
-      currentSentiment = report.sentiment
+      }        
+      pieChartData = pieChartData.stripPrefix(",").stripSuffix(",").trim()
+      pieChartData += """
+      ],
+      "sentiment":"""" + currentSentiment + """", "value":23
+      }
+      ]"""
+      trendData = trendData.stripPrefix(",").stripSuffix(",").trim()
+      trendData += """
+      ],
+      "pieChartData" : """ + pieChartData + """
+      }
+      """
+      val json_obj = Json.parse(trendData)
+      Ok(json_obj) 
+      }
+      else{
+          Ok(" Sorry, No Data Available :-( ")
+      }
   }
-  else if(currentSentiment==report.sentiment){
-    pieChartData += """
-    {
-      "date" : "12-05-2014",
-      "value" : 25
-  },"""
-}
-}        
-pieChartData = pieChartData.stripPrefix(",").stripSuffix(",").trim()
-pieChartData += """
-],
-"sentiment":"""" + currentSentiment + """", "value":23
-}
-]"""
-trendData = trendData.stripPrefix(",").stripSuffix(",").trim()
-trendData += """
-],
-"pieChartData" : """ + pieChartData + """
-}
-"""
-val json_obj = Json.parse(trendData)
-Ok(json_obj) 
-}
-else{
-    Ok(" Sorry, No Data Available :-( ")
-}
-}
-else{
-  Ok("Invalid Request")      
-}
+  else {
+    Ok("Invalid Request")      
+  }
 }  
 
 def scheduleAnalysis = Action {implicit request =>

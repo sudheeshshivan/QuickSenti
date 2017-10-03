@@ -36,6 +36,7 @@ GET		/webService/api/read/privilageAssignedToGroup/:hashId	controllers.WebServic
 GET		/webService/remove/graph/:hashId					controllers.WebServices.doRemoveGraph(hashId : String)
 GET		/user/assign/previlage						controllers.UserManager.assignUserPrevilage
 GET		/user/remove/previlage						controllers.UserManager.removeUserPrevilage
+GET		/report/view								controllers.AdminArea.viewReport
 GET		/webService/api/read/reportsForPrevilage/:reportType controllers.WebServices.apiReadReportForPrevilage(reportType : Int)
 GET		/webService/api/read/datasourceForPrevilage controllers.WebServices.apiReadDatasourceForPrevilage()
 GET		/userArea											controllers.UserArea.dashboard

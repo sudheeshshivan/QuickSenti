@@ -1,0 +1,135 @@
+@(adminHeader : Html, dataSources : List[ConfigurationInfoList], adminfooter :Html)(implicit request: RequestHeader)
+
+@adminHeader
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script>
+$(function() {
+  $( "#datepicker1" ).datepicker({ dateFormat: 'yy-mm-dd' });
+  $( "#datepicker2" ).datepicker({ dateFormat: 'yy-mm-dd' });
+});
+</script>
+
+<section class="content-header">
+    <h1>
+        Report Page
+    </h1>
+</section>
+
+<section class="content">            
+                    
+    <div class="row">
+
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Datasource Report Charts</h3>
+                </div><!-- /.box-header -->
+                <div class="box-body">
+
+                  @if(request.flash.get("error").getOrElse("")!=""){
+                  <div class="alert alert-danger">              
+                    @request.flash.get("error").getOrElse("")
+                  </div>
+                  }               
+                  @if(request.flash.get("success").getOrElse("")!=""){
+                  <div class="alert alert-success">              
+                    @request.flash.get("success").getOrElse("")
+                  </div>
+                  }
+                  <div class="col col-sm-6">        
+                    <div id="linegraph">  
+                      <input type="text" id="datepicker1" placeholder value="2017-09-03">
+                      <input type="text" id="datepicker2" placeholder value="2017-09-23"> 
+                      <input type="button" id="loadTrend" onclick="loadTrend();" class="btn btn-primary" value="Load Data">
+                      <svg id="linechart"></svg>
+                    </div>
+                  </div>   
+                  <div class="col sol-sm-6">
+                    <svg  id="piechart"></svg>
+                  </div>
+
+                  <div id="line-chart" style="height: 400px; padding: 0px; position: relative;">
+                      <canvas id="myChart" width="400" height="150"></canvas>
+                  </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div>
+
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+<script type="text/javascript">
+
+  function loadTrend(){
+    
+    var startDate = $("#datepicker1").val();
+    var endDate = $("#datepicker2").val();
+    
+    if(startDate=="Start Date" || endDate =="End Date" || startDate=="" || endDate ==""){
+      alert("Select Two Dates");
+      return ;
+    }
+    if(startDate>endDate){
+        alert("Date Error");
+    }
+    // alert('@routes.AdminArea.getTrendData("","")' + '"'+startDate+'"/"'+endDate+'"'));
+    $.ajax({url: '../adminArea/getTrendData/'+startDate+'/'+endDate, success: function(result){
+        $("#linechart").html("");
+        $("#piechart").html("");
+        console.log(result);
+        if(typeof result.trendData == 'undefined'){
+          alert(result);              
+        }
+        else {        
+          drawChart(result.trendData);      
+          // drawLineChart(result.trendData);
+          // drawPieChart(result.pieChartData);
+        }
+    }});
+
+  }
+</script>
+
+<script>
+
+function drawChart(data) {
+
+  var chartLabels = []
+  var chartValues = []
+
+  for (var i = data.length - 1; i >= 0; i--) {
+    chartLabels[i] = data[i].name;
+    chartValues[i] = data[i].value * -1;
+  }
+
+  console.log(chartLabels);
+  console.log(chartValues);
+
+  $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+
+  // document.getElementById("myChart").innerHTML = '<canvas id="myChart"></canvas>'
+
+  var ctx = document.getElementById("myChart").getContext('2d');
+
+  var myChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+          labels: chartLabels,
+          datasets: [{
+              label: "Sentiment Value",
+              backgroundColor: '#5BC0EB',
+              borderColor: '#003459',
+              data: chartValues,
+          }]
+      },
+      options: {}
+  });
+}
+
+</script>
+
+@adminfooter
