@@ -1,40 +1,154 @@
 @(adminheader : Html, userForm : Form[UserInfo], groupList : Seq[(String,String)], userList : List[User], adminfooter : Html)
-	@adminheader
-        <div class="admin-outer">
-        	<div class="panel panel-primary">
-        		<div class="panel-heading">New User Registration</div>
-        		<div class="panel-body">  
-                    <div class="col col-sm-6">
-                        @helper.form(action = routes.UserManager.createNewUser){                       
-                            @helper.select(field = userForm("grpid") , options = groupList
-    , '_showConstraints -> false, 'required->"required", '_label -> "User Group")
-                            @helper.inputText(userForm("username"), '_label -> "Username", '_showConstraints -> false, 'required -> "required")
-                            @helper.inputPassword(userForm("password.main"), '_label -> "Password", '_showConstraints -> false, 'required -> "required") 
-                            @helper.inputPassword(userForm("password.confirm"),'_error -> userForm.error("password"), '_label -> "Confirm Password", '_showConstraints -> false, 'required -> "required")
-                            @helper.inputText(userForm("email"), '_label -> "Email", '_showConstraints -> false, 'required -> "required")
-                            <input type="submit" value="Create" class="btn btn-primary"> 
-                        }
-                    </div>        		
-                    <div class="col col-sm-6">
-                        <table class="table table-hover">      
-                            <tr class="info">
-                                <th>Username</th>
-                                <th>User Group</th>
-                                <th></th>
-                            </tr>                                                  
-                        @userList.map{ user =>
-                            <tr>
-                                <td>@user.username</td>
-                                <td>@user.userGroup</td>
-                                <td><a href="@routes.UserManager.deleteUser(GeneralFunctions.getMD5Hash(user.uid.toString))"  onclick="return confirmAction();" class="btn btn-danger">x</a></td>
-                            </tr>
-                        }
-                        </table>
-                    </div>
-        		</div>        		
-        	</div>
-        </div>       
-    <!-- </body> -->
+    @adminheader
+    
+  <section class="content-header">
+     <h1>
+        New User Registration
+     </h1>
+ </section>
+
+ <section class="content">            
+     <div class="row">
+         <div class="col-md-6">     
+            @helper.form(action = routes.UserManager.createNewUser){          
+            <div class="box box-primary">
+                <div class="box-body">
+                    <form role="form">
+                        <div class="form-group">
+                            @helper.select(
+                                    field = userForm("grpid") , 
+                                    options = groupList, 
+                                    '_showConstraints -> false, 
+                                    'required->"required", 
+                                    '_label -> "User Group"
+                            )
+                        </div>
+
+                        <div class="form-group">
+                             @helper.inputText(
+                                    userForm("username"), 
+                                    '_label -> "Username", 
+                                    '_showConstraints -> false,
+                                    'id -> "user-name",
+                                    'maxlength -> "20",
+                                    'onkeyup -> "alpha()", 
+                                    'required -> "required"
+                            )
+                        </div>
+                        <div class="form-group" id="user-name-error">
+                        </div>
+
+                        <div class="form-group">
+                            @helper.inputPassword(
+                                    userForm("password.main"), 
+                                    '_label -> "Password", 
+                                    'maxlength -> "20",
+                                    '_showConstraints -> false, 
+                                    'required -> "required"
+                            ) 
+                        </div>
+                        <div class="form-group" id="table-name-error">
+                        </div>
+
+                        <div class="form-group">
+                            @helper.inputPassword(
+                                    userForm("password.confirm"),
+                                    '_error -> userForm.error("password"), 
+                                    '_label -> "Confirm Password", 
+                                    'maxlength -> "20",
+                                    '_showConstraints -> false, 
+                                    'required -> "required"
+                            )
+                        </div>
+
+                        <div class="form-group">
+                             @helper.inputText(
+                                    userForm("email"), 
+                                    '_label -> "Email", 
+                                    'maxlength -> "30",
+                                    '_showConstraints -> false, 
+                                    'required -> "required"
+                                )
+                        </div>
+                        
+                        
+
+                        <input type="submit" value="Save" class="btn btn-primary" /> 
+
+                    </form>
+                </div>
+                }
+            </div>
+
+        </div>
+
+        <!-- <div class="col col-sm-6">
+            <table class="table table-hover">      
+                <tr class="info">
+                    <th>Username</th>
+                    <th>User Group</th>
+                    <th></th>
+                </tr>                                                  
+              @userList.map{ user =>
+                <tr>
+                    <td>@user.username</td>
+                    <td>@user.userGroup</td>
+                    <td><a href="@routes.UserManager.deleteUser(GeneralFunctions.getMD5Hash(user.uid.toString))"  onclick="return confirmAction();" class="btn btn-danger">x</a></td>
+                </tr>
+              }
+            </table>
+        </div>
+ --> <div class="col col-sm-6">
+     <div class="box ">
+                                <div class="box-header">
+                                    <h3 class="box-title">Users</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body no-padding">
+                                    <table class="table table-striped">
+                                        <tbody><tr>
+                                            <th>Username</th>
+                                            <th>usergroup</th>
+                                            <th style="width: 40px"></th>
+                                        </tr>
+                                         @userList.map{ user =>
+                                            <tr>
+                                                <td>@user.username</td>
+                                                <td>@user.userGroup</td>
+                                                <td><a href="@routes.UserManager.deleteUser(GeneralFunctions.getMD5Hash(user.uid.toString))"  onclick="return confirmAction();" class="btn btn-danger">x</a></td>
+                                            </tr>
+                                         }                          
+                                        </tbody>
+                                    </table>
+                                </div><!-- /.box-body -->
+                            </div>
+
+ </div>
+</div>
+    </div> <!-- /.row -->
+
+</section>
+
     <script type="text/javascript" src="@routes.Assets.at("javascripts/generalFunctions.js")"></script>
-<!-- </html> -->
+    
+    <script type="text/javascript">
+    function alpha()
+        {  
+
+            var field = document.getElementById('user-name');
+            var uname = field.value;
+            // var letters = /^[a-zA-Z]+$/;
+            var letters = /^[a-zA-Z\/]*$/;
+        if(uname.match(letters))
+        {
+            var er = document.getElementById('user-name-error');
+            er.innerHTML = '';
+        }
+        else
+        {
+         var er = document.getElementById('user-name-error');
+         er.innerHTML = 'Please input alphabet characters only';
+        }
+        }
+</script>
+
 @adminfooter

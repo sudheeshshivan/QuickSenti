@@ -363,8 +363,8 @@ object WebServices extends Controller {
           header = views.html.adminheader("Report Page", 4,reportMenu)
         }
         else{
-          val reportMenu  = GeneralFunctions.loadReportMenuItemsForUser(userData.get("userGroup").get.toString())
-          header = views.html.userheader("Report Page",1,reportMenu)
+          val dataSource = AdminModel.readAllDataSource
+          header = views.html.userheader("Report Page",1,dataSource)
         }
     		Ok(views.html.reportLoader(header,hashId,1))
       }
@@ -392,9 +392,8 @@ object WebServices extends Controller {
           header = views.html.adminheader("Report Page", 4,reportMenu)
         }
         else{
-          val reportMenu  = GeneralFunctions.loadReportMenuItemsForUser(userData.get("userGroup").get.toString())
-//          println(userData.get("userGroup"))
-          header = views.html.userheader("Report Page",1,reportMenu)
+          val dataSource = AdminModel.readAllDataSource
+          header = views.html.userheader("Report Page",1,dataSource)
         }
  				Ok(views.html.reportLoader(header,hashId,2))
     	}

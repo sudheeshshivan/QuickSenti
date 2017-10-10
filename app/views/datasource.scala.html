@@ -31,17 +31,14 @@
 					
 	<div class="row">
 
-		<div class="col-md-8 col-md-offset-2">
+		<div class="col-md-8">
 			@helper.form(action = routes.AdminArea.doConfiguration()){				
 			<!-- general form elements disabled -->
-			<div class="box box-solid">
-				<!-- /.box-header -->
+			<div class="box box-primary">
+				<div class="box-header">
+					<h3 class="box-title">Basic</h3>
+				</div><!-- /.box-header -->
 				<div class="box-body">
-
-					<div class="box-header">
-						<h3 class="box-title">Basic</h3>
-					</div>
-
 					<form role="form">
 						<div class="form-group">
 						@helper.select(
@@ -64,9 +61,13 @@
 							'_showConstraints -> false, 
 							'required -> "required", 
 							'class -> "form-control",
-							'placeholder -> "Enter Datasource Name",
+							'placeholder -> "Enter Datasource Name",							'maxlength -> "30",
+							'id -> "ds-name",
+							'onkeyup -> "alpha()",
 							'_label -> "DataSource Name" 
 						)
+						</div>
+						<div class="form-group" id="ds-name-error">
 						</div>
 
 						<div class="form-group">
@@ -76,8 +77,14 @@
 							'required -> "required", 
 							'class -> "form-control",
 							'placeholder -> "Enter Table Name",
+							'id -> "tbl-name",
+							'maxlength -> "15",
+							'onkeyup -> "nospace()",
 							'_label -> "Table Name" 
 						)
+						</div>
+						<div class="form-group" id="tbl-name-error">
+						</div>
 
 						<div class="box-header">
 							<h3 class="box-title">Authentication</h3>
@@ -90,9 +97,15 @@
 							'_showConstraints -> false, 
 							'required -> "required", 
 							'class -> "form-control",
+							'maxlength -> "50",
+							'id -> "access-key-name",
+							'onkeyup -> "alphanum1()",
 							'placeholder -> "Enter Access Key",
 							'_label -> "Access Key" 
 						)
+						</div>
+
+						<div class="form-group" id="access-key-error">
 						</div>
 
 						<div class="form-group">
@@ -101,9 +114,15 @@
 							'_showConstraints -> false, 
 							'required -> "required", 
 							'class -> "form-control",
+							'maxlength -> "45",
+							'id -> "access-secret-name",
+							'onkeyup -> "alphanum2()",
 							'placeholder -> "Enter Access Secret",
 							'_label -> "Access Secret" 
 						)
+						</div>
+	
+						<div class="form-group" id="access-secret-error">
 						</div>
 						
 						<div class="form-group">
@@ -112,10 +131,16 @@
 						 	'_showConstraints -> false, 
 						 	'required -> "required", 
 						 	'class -> "form-control",
+						 	'maxlength -> "25",
+						 	'id -> "consumer-key-name",
+							'onkeyup -> "alphanum3()",
 							'placeholder -> "Enter Consumer Key",
 						 	'_label -> "Consumer Key" 
 			
 						)
+						</div>
+						
+						<div class="form-group" id="consumer-key-error">
 						</div>
 
 						<div class="form-group">
@@ -124,20 +149,31 @@
 							'_showConstraints -> false, 
 							'required -> "required", 
 							'class -> "form-control",
+							'maxlength -> "50",
+							'id -> "consumer-secret-name",
+							'onkeyup -> "alphanum4()",
 							'placeholder -> "Enter Consumer Secret",
 							'_label -> "Consumer Secret" 
 						)
 						</div>
 
+						<div class="form-group" id="consumer-secret-error">
+						</div>
+						
+						
 						<div class="form-group">
 						@helper.textarea(
 							configurationForm("keywords") , 
 							'_showConstraints -> false, 
 							'required -> "required", 
 							'class -> "form-control",
+							'id -> "all-keywords",
+							'onkeyup -> "alphanum5()",
 							'placeholder -> "Enter Keywords",
 							'_label -> "Keywords" 
 						)
+						</div>
+						<div class="form-group" id="keywords-error">
 						</div>
 
 						 <input type="submit" value="Save" class="btn btn-primary" /> 
@@ -164,5 +200,149 @@
 
 </section>
 
-	 <!-- </aside> -->
+<script type="text/javascript">
+	function alpha()
+		{  
+
+			var field = document.getElementById('ds-name');
+			var uname = field.value;
+ 		    // var letters = /^[a-zA-Z]+$/;
+ 		    var letters = /^[a-zA-Z\/\s]*$/;
+ 		    // var letters = /\S{10,}/;
+		if(uname.match(letters))
+		{
+			var er = document.getElementById('ds-name-error');
+		    er.innerHTML = '';
+		}
+		else
+		{
+		 var er = document.getElementById('ds-name-error');
+		 er.innerHTML = 'Please input alphabet characters only';
+		}
+		}
+</script>
+
+<script type="text/javascript">
+	function nospace()
+		{
+			var field1 = document.getElementById('tbl-name');
+			var tname = field1.value;
+			var letters1 = /^[a-zA-Z\/]*$/;
+			var letters2 = /[0-9]/;
+
+			if (tname.match(letters1)) {
+				var err = document.getElementById('tbl-name-error');
+				err.innerHTML = '';
+			}
+			else if (tname.match(letters2)){
+				var err = document.getElementById('tbl-name-error');
+				err.innerHTML = 'Please input alphabet characters only ';
+
+			}
+			else{
+				var err = document.getElementById('tbl-name-error');
+				err.innerHTML = ' Do not use space '
+			}
+		}
+</script>
+<script type="text/javascript">
+	function alphanum1()
+		{  	
+
+
+			var field = document.getElementById('access-key-name');
+			var uname = field.value;
+ 		    var letters = /^[a-zA-Z0-9\/\-/]*$/;
+		if(uname.match(letters))
+		{
+			var er = document.getElementById('access-key-error');
+		    er.innerHTML = '';
+		}
+		else
+		{
+		 var er = document.getElementById('access-key-error');
+		 er.innerHTML = 'Please input alphanumeric only';
+		}
+		}
+</script>
+<script type="text/javascript">
+	function alphanum2()
+		{  	
+
+
+			var field = document.getElementById('access-secret-name');
+			var uname = field.value;
+ 		    var letters = /^[a-zA-Z0-9\/\-/]*$/;
+		if(uname.match(letters))
+		{
+			var er = document.getElementById('access-secret-error');
+		    er.innerHTML = '';
+		}
+		else
+		{
+		 var er = document.getElementById('access-secret-error');
+		 er.innerHTML = 'Please input alphanumeric only';
+		}
+		}
+</script>
+<script type="text/javascript">
+	function alphanum3()
+		{  	
+
+
+			var field = document.getElementById('consumer-key-name');
+			var uname = field.value;
+ 		    var letters = /^[a-zA-Z0-9\/\-/]*$/;
+		if(uname.match(letters))
+		{
+			var er = document.getElementById('consumer-key-error');
+		    er.innerHTML = '';
+		}
+		else
+		{
+		 var er = document.getElementById('consumer-key-error');
+		 er.innerHTML = 'Please input alphanumeric only';
+		}
+		}
+</script><script type="text/javascript">
+	function alphanum4()
+		{  	
+
+
+			var field = document.getElementById('consumer-secret-name');
+			var uname = field.value;
+ 		    var letters = /^[a-zA-Z0-9\/\-/]*$/;
+		if(uname.match(letters))
+		{
+			var er = document.getElementById('consumer-secret-error');
+		    er.innerHTML = '';
+		}
+		else
+		{
+		 var er = document.getElementById('consumer-secret-error');
+		 er.innerHTML = 'Please input alphanumeric only';
+		}
+		}
+</script>
+<script type="text/javascript">
+	function alphanum5()
+		{  	
+
+
+			var field = document.getElementById('all-keywords');
+			var uname = field.value;
+ 		    var letters = /^[a-zA-Z0-9\/\,/]*$/;
+		if(uname.match(letters))
+		{
+			var er = document.getElementById('keywords-error');
+		    er.innerHTML = '';
+		}
+		else
+		{
+		 var er = document.getElementById('keywords-error');
+		 er.innerHTML = 'Please input alphanumeric or coma';
+		}
+		}
+</script>
+	
 @adminfooter

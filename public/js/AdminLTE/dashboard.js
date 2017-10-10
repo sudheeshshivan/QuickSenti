@@ -26,7 +26,7 @@ $(function() {
     }).disableSelection();;
 
     //bootstrap WYSIHTML5 - text editor
-    $(".textarea").wysihtml5();
+    // $(".textarea").wysihtml5();
 
     $('.daterange').daterangepicker(
             {

@@ -13,4 +13,5 @@ dist
 /.project
 /RUNNING_PID
 /.settings
+public/flume_config
 .DS_Store

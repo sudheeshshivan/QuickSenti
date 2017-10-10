@@ -1,56 +1,4 @@
-@(title : String, pageId : Int, reportMenu : List[(String, Int,Int)])
-<!-- <!DOCTYPE html>
-
-<html>
-    <head>
-      <title>@title</title>
-      <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.css")">
-      <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
-      <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
-      <script src="@routes.Assets.at("javascripts/jquery-2.1.1.min.js")" type="text/javascript"></script>
-      <script src="@routes.Assets.at("javascripts/bootstrap.js")" type="text/javascript"></script>
-      <style type="text/css">
-      body {
-        font: 10px sans-serif;
-      }
-      </style>
-    </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-static-top">        
-        	<div class="container-fluid">
-        	<ul class="nav navbar-nav navbar-right">
-        		<li @if(pageId==1){ class="active" }><a href="@routes.UserArea.dashboard">Home</a></li>        		
-            
-            <li class="dropdown @if(pageId==4){ active }">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Reports <span class="caret"></span></a>
-                <ul class="dropdown-menu" role="menu">
-                  @for(menuItem <- reportMenu){
-                    <li><a 
-                      @if(menuItem._3==1){ href="@routes.WebServices.loadReportView(GeneralFunctions.getMD5Hash(menuItem._2.toString()))" }else{ href="@routes.WebServices.loadReportPage(GeneralFunctions.getMD5Hash(menuItem._2.toString()))" }
-                      >@menuItem._1</a></li>
-                  }
-                  <li class="divider"></li>
-                </ul>
-            </li>
-        		<li><a href="@routes.Login.logout">Logout </a></li>
-        	</ul>
-        	</div>
-        </div>
-        <script type="text/javascript">
-(function($){
-  $(document).ready(function(){
-    $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
-      event.preventDefault(); 
-      event.stopPropagation(); 
-      $(this).parent().siblings().removeClass('open');
-      $(this).parent().toggleClass('open');
-    });
-  });
-})(jQuery);
-        </script> -->
-
-
-<!-- ------------------------------------------------------------------------------------ -->
+@(title : String, pageId : Int, dataSources : List[ConfigurationInfoList])
 
 
 <!DOCTYPE html>
@@ -67,6 +15,10 @@
         <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/ionicons.min.css")">
         <!-- Theme style -->
         <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/AdminLTE.css")">
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+        <!-- jQuery UI 1.10.3 -->
+        <script src="@routes.Assets.at("js/jquery-ui-1.10.3.min.js")" type="text/javascript"></script>
 
         
     </head>
@@ -143,41 +95,6 @@
                                 <i class="fa fa-home"></i> <span>Home</span>
                             </a>
                         </li>
-                        
-                        <li class="treeview @if(pageId==4){ active }">
-                            <a href="#">
-                                <i class="fa fa-edit"></i> <span>Reports</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                @for(menuItem <- reportMenu){
-                                    <li>
-                                        <a 
-                                            @if(menuItem._3==1){ 
-                                                href="@routes.WebServices.loadReportView(GeneralFunctions.getMD5Hash(menuItem._2.toString()))" 
-                                            }else{ 
-                                                href="@routes.WebServices.loadReportPage(GeneralFunctions.getMD5Hash(menuItem._2.toString()))" 
-                                            }
-                                        >@menuItem._1
-                                        </a>
-                                    </li>
-                                }
-                                 <li class="divider"></li>
-                            </ul>
-                        </li>
-
-
-                       
-
-
-
-
-
-
-
-
-<!-- --------------------------------------------------------------------------- -->
-
                         <li>
                             <a href="@routes.Login.logout">
                                 <i class="fa fa-sign-out"></i> <span>Logout</span>
@@ -190,21 +107,173 @@
             </aside>
             <aside class="right-side">
 
+                <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/daterangepicker-bs3.css")">
+
+
+                <section class="content-header">
+                    <h1>
+                        Report Page
+                    </h1>
+                </section>
+
+                <section class="content">            
+                                    
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Datasource Report Charts</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                  <div class="row">
+
+                                      <div class="col col-sm-4"> 
+
+                                        <div class="form-group">
+                                            <label>Select Datasource</label>
+                                            <select class="form-control" id="datasource-field">
+                                                @dataSources.map{ config =>
+                                                  <option>@config.accountTitle</option>
+                                                }
+                                            </select>
+                                        </div>
+                                      </div>
+
+                                      <div class="col col-sm-4">         
+                <!--                           <div class="input-group">
+
+                                              <div class="input-group-addon">
+                                                  <i class="fa fa-calendar"></i>
+                                              </div>
+                                              <input type="text" class="form-control pull-right" id="datepicker">
+                                          </div> -->
+                                          <div class="form-group">
+                                              <label>Select Date Range</label>
+                                              <input type="text" class="form-control" id="datepicker">
+                                          </div>
+                                      </div>
+                                      <div class="col col-sm-4">
+                                            <!-- <input type="button" id="loadTrend" onclick="loadTrend();" class="btn btn-primary" value="Load Data">  -->
+                                            <div class="form-group">
+                                                <label>Select Chart Type</label>
+                                                <select class="form-control" id="chartType">
+                                                    <option>line</option>
+                                                    <option>bar</option>
+                                                </select>
+                                            </div>
+                                      </div> 
+
+                                      <div class="col sol-sm-10" >
+                                          <canvas id="myChart" width="300" height="150"></canvas>
+                                      </div>
+                                
+                                  </div>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
+
+                    </div>
+                </section>
+
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
+                <script>
+
+                function drawChart(data) {
+
+                  var chartLabels = []
+                  var chartValues = []
+
+                  for (var i = data.length - 1; i >= 0; i--) {
+                    chartLabels[i] = data[i].name;
+                    chartValues[i] = data[i].value * -1;
+                    // chartValues[i] = data[i].value;
+
+                  }
+
+                  console.log(chartLabels);
+                  console.log(chartValues);
+
+                  var chartTypeSelect = document.getElementById("chartType");
+                  var chartType = chartTypeSelect.options[chartTypeSelect.selectedIndex].text;
+
+                  console.log(chartType)
+
+                  $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+
+                  // document.getElementById("myChart").innerHTML = '<canvas id="myChart"></canvas>'
+
+                  var ctx = document.getElementById("myChart").getContext('2d');
+
+                  var myChart = new Chart(ctx, {
+                      type: chartType,
+                      data: {
+                          labels: chartLabels,
+                          datasets: [{
+                              label: "Sentiment Value",
+                              backgroundColor: '#5BC0EB',
+                              borderColor: '#003459',
+                              data: chartValues,
+                          }]
+                      },
+                      options: {}
+                  });
+                }
+
+                </script>
+
+                @adminfooter
+
+                <script type="text/javascript">
+                $(function() {
+                    $('input[id="datepicker"]').daterangepicker({
+                    }, 
+                    function(start, end, label) {
+                        var startDate = start.format('YYYY-MM-DD');
+                        var endDate = end.format('YYYY-MM-DD');
+                        
+                        if(startDate=="Start Date" || endDate =="End Date" || startDate=="" || endDate ==""){
+                          $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+                          alert("Select Two Dates");
+                          return ;
+                        }
+                        if(startDate>endDate){
+                            $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+                            alert("Date Error");
+                            return ;
+                        }
+
+                        var datasourceSelect = document.getElementById("datasource-field");
+                        var datasource = datasourceSelect.options[datasourceSelect.selectedIndex].text;
+                        
+                        if (datasource != "iphone") {
+                            $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+                            alert("No data available for the selected datasource");
+                            return;
+                        }
+
+                        $.ajax({url: '../adminArea/getTrendData/'+startDate+'/'+endDate, success: function(result){
+                            console.log(result);
+                            if(typeof result.trendData == 'undefined'){
+                              $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+                              alert(result);              
+                            }
+                            else {        
+                              drawChart(result.trendData);      
+                            }
+                        }});
+                    });
+                });
+                </script>
             </div>
         </aside>
         <!-- jQuery 2.0.2 -->
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-        <!-- jQuery UI 1.10.3 -->
-        <script src="@routes.Assets.at("js/jquery-ui-1.10.3.min.js")" type="text/javascript"></script>
+
         <!-- Bootstrap -->
         <script src="@routes.Assets.at("js/bootstrap.min.js")" type="text/javascript"></script>
         <!-- Morris.js charts -->
         <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 
-        <!-- AdminLTE App -->
-        <script src="@routes.Assets.at("js/AdminLTE/app.js")" type="text/javascript"></script>
-        
-        <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-        <script src="@routes.Assets.at("js/AdminLTE/dashboard.js")" type="text/javascript"></script>
     </body>
 </html>

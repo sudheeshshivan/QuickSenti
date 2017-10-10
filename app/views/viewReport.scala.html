@@ -1,15 +1,9 @@
-@(adminHeader : Html, dataSources : List[ConfigurationInfoList], adminfooter :Html)(implicit request: RequestHeader)
+@(adminHeader : Html, dataSources : List[ConfigurationInfoList] , adminfooter :Html)(implicit request: RequestHeader)
 
 @adminHeader
 
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-<script>
-$(function() {
-  $( "#datepicker1" ).datepicker({ dateFormat: 'yy-mm-dd' });
-  $( "#datepicker2" ).datepicker({ dateFormat: 'yy-mm-dd' });
-});
-</script>
+<link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/daterangepicker-bs3.css")">
+
 
 <section class="content-header">
     <h1>
@@ -27,31 +21,48 @@ $(function() {
                     <h3 class="box-title">Datasource Report Charts</h3>
                 </div><!-- /.box-header -->
                 <div class="box-body">
+                  <div class="row">
 
-                  @if(request.flash.get("error").getOrElse("")!=""){
-                  <div class="alert alert-danger">              
-                    @request.flash.get("error").getOrElse("")
-                  </div>
-                  }               
-                  @if(request.flash.get("success").getOrElse("")!=""){
-                  <div class="alert alert-success">              
-                    @request.flash.get("success").getOrElse("")
-                  </div>
-                  }
-                  <div class="col col-sm-6">        
-                    <div id="linegraph">  
-                      <input type="text" id="datepicker1" placeholder value="2017-09-03">
-                      <input type="text" id="datepicker2" placeholder value="2017-09-23"> 
-                      <input type="button" id="loadTrend" onclick="loadTrend();" class="btn btn-primary" value="Load Data">
-                      <svg id="linechart"></svg>
-                    </div>
-                  </div>   
-                  <div class="col sol-sm-6">
-                    <svg  id="piechart"></svg>
-                  </div>
+                      <div class="col col-sm-4"> 
 
-                  <div id="line-chart" style="height: 400px; padding: 0px; position: relative;">
-                      <canvas id="myChart" width="400" height="150"></canvas>
+                        <div class="form-group">
+                            <label>Select Datasource</label>
+                            <select class="form-control" id="datasource-field">
+                                @dataSources.map{ config =>
+                                  <option>@config.accountTitle</option>
+                                }
+                            </select>
+                        </div>
+                      </div>
+
+                      <div class="col col-sm-4">         
+<!--                           <div class="input-group">
+
+                              <div class="input-group-addon">
+                                  <i class="fa fa-calendar"></i>
+                              </div>
+                              <input type="text" class="form-control pull-right" id="datepicker">
+                          </div> -->
+                          <div class="form-group">
+                              <label>Select Date Range</label>
+                              <input type="text" class="form-control" id="datepicker">
+                          </div>
+                      </div>
+                      <div class="col col-sm-4">
+                            <!-- <input type="button" id="loadTrend" onclick="loadTrend();" class="btn btn-primary" value="Load Data">  -->
+                            <div class="form-group">
+                                <label>Select Chart Type</label>
+                                <select class="form-control" id="chartType">
+                                    <option>line</option>
+                                    <option>bar</option>
+                                </select>
+                            </div>
+                      </div> 
+
+                      <div class="col sol-sm-10" >
+                          <canvas id="myChart" width="300" height="150"></canvas>
+                      </div>
+                
                   </div>
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -61,38 +72,6 @@ $(function() {
 </section>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-
-<script type="text/javascript">
-
-  function loadTrend(){
-    
-    var startDate = $("#datepicker1").val();
-    var endDate = $("#datepicker2").val();
-    
-    if(startDate=="Start Date" || endDate =="End Date" || startDate=="" || endDate ==""){
-      alert("Select Two Dates");
-      return ;
-    }
-    if(startDate>endDate){
-        alert("Date Error");
-    }
-    // alert('@routes.AdminArea.getTrendData("","")' + '"'+startDate+'"/"'+endDate+'"'));
-    $.ajax({url: '../adminArea/getTrendData/'+startDate+'/'+endDate, success: function(result){
-        $("#linechart").html("");
-        $("#piechart").html("");
-        console.log(result);
-        if(typeof result.trendData == 'undefined'){
-          alert(result);              
-        }
-        else {        
-          drawChart(result.trendData);      
-          // drawLineChart(result.trendData);
-          // drawPieChart(result.pieChartData);
-        }
-    }});
-
-  }
-</script>
 
 <script>
 
@@ -104,10 +83,17 @@ function drawChart(data) {
   for (var i = data.length - 1; i >= 0; i--) {
     chartLabels[i] = data[i].name;
     chartValues[i] = data[i].value * -1;
+    // chartValues[i] = data[i].value;
+
   }
 
   console.log(chartLabels);
   console.log(chartValues);
+
+  var chartTypeSelect = document.getElementById("chartType");
+  var chartType = chartTypeSelect.options[chartTypeSelect.selectedIndex].text;
+
+  console.log(chartType)
 
   $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
 
@@ -116,7 +102,7 @@ function drawChart(data) {
   var ctx = document.getElementById("myChart").getContext('2d');
 
   var myChart = new Chart(ctx, {
-      type: 'line',
+      type: chartType,
       data: {
           labels: chartLabels,
           datasets: [{
@@ -133,3 +119,46 @@ function drawChart(data) {
 </script>
 
 @adminfooter
+
+<script type="text/javascript">
+$(function() {
+    $('input[id="datepicker"]').daterangepicker({
+    }, 
+    function(start, end, label) {
+        var startDate = start.format('YYYY-MM-DD');
+        var endDate = end.format('YYYY-MM-DD');
+        
+        if(startDate=="Start Date" || endDate =="End Date" || startDate=="" || endDate ==""){
+          $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+          alert("Select Two Dates");
+          return ;
+        }
+        if(startDate>endDate){
+            $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+            alert("Date Error");
+            return ;
+        }
+
+        var datasourceSelect = document.getElementById("datasource-field");
+        var datasource = datasourceSelect.options[datasourceSelect.selectedIndex].text;
+        
+        if (datasource != "iphone") {
+            $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+            alert("No data available for the selected datasource");
+            return;
+        }
+
+        $.ajax({url: '../adminArea/getTrendData/'+startDate+'/'+endDate, success: function(result){
+            console.log(result);
+            if(typeof result.trendData == 'undefined'){
+              $('#myChart').replaceWith('<canvas id="myChart" width="400" height="150"></canvas>');
+              alert(result);              
+            }
+            else {        
+              drawChart(result.trendData);      
+            }
+        }});
+    });
+});
+</script>
+
