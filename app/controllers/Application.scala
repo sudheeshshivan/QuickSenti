@@ -28,10 +28,25 @@ object Application extends Controller {
           return false
         } 
     }
+
+    def checkUserSession (req : Request[AnyContent]) : Boolean = {
+        req.session.get("uid").map { user =>
+            val group = req.session.get("usergroup").get
+            if (group.toInt==0) {        
+                 return false
+            } else {
+                return true
+            }
+        }.getOrElse {
+          return false
+        } 
+    }
   
  	def index = Action {implicit request =>
 
-    	if(checkSession(request)){
+        if(checkUserSession(request)){
+            Redirect("/userArea")
+        } else if(checkSession(request)){
     		Redirect("/adminArea")
         } else {
             Ok(views.html.main("QuickSenti | Login", Login.loginForm))

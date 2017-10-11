@@ -1,6 +1,5 @@
 @(title : String, pageId : Int, dataSources : List[ConfigurationInfoList])
 
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,6 +14,8 @@
         <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/ionicons.min.css")">
         <!-- Theme style -->
         <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/AdminLTE.css")">
+
+        <link rel="stylesheet" type="text/css" href="@routes.Assets.at("stylesheets/daterangepicker-bs3.css")">
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
         <!-- jQuery UI 1.10.3 -->
@@ -141,20 +142,12 @@
                                       </div>
 
                                       <div class="col col-sm-4">         
-                <!--                           <div class="input-group">
-
-                                              <div class="input-group-addon">
-                                                  <i class="fa fa-calendar"></i>
-                                              </div>
-                                              <input type="text" class="form-control pull-right" id="datepicker">
-                                          </div> -->
                                           <div class="form-group">
                                               <label>Select Date Range</label>
                                               <input type="text" class="form-control" id="datepicker">
                                           </div>
                                       </div>
                                       <div class="col col-sm-4">
-                                            <!-- <input type="button" id="loadTrend" onclick="loadTrend();" class="btn btn-primary" value="Load Data">  -->
                                             <div class="form-group">
                                                 <label>Select Chart Type</label>
                                                 <select class="form-control" id="chartType">
@@ -163,11 +156,55 @@
                                                 </select>
                                             </div>
                                       </div> 
+                                
+                                  </div>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
 
-                                      <div class="col sol-sm-10" >
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Pie Chart</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                  <div class="row">
+
+                                      <div class="col col-sm-12">
+                                          <canvas id="myChart3" width="300" height="150"></canvas>
+                                      </div>
+                                  </div>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Aggregate Sentiment</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                  <div class="row">
+
+                                      <div class="col col-sm-12">
                                           <canvas id="myChart" width="300" height="150"></canvas>
                                       </div>
-                                
+                                  </div>
+                                </div><!-- /.box-body -->
+                            </div><!-- /.box -->
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="box">
+                                <div class="box-header">
+                                    <h3 class="box-title">Seperate Sentiment</h3>
+                                </div><!-- /.box-header -->
+                                <div class="box-body">
+                                  <div class="row">
+
+                                      <div class="col col-sm-12">
+                                          <canvas id="myChart2" width="300" height="150"></canvas>
+                                      </div>
                                   </div>
                                 </div><!-- /.box-body -->
                             </div><!-- /.box -->
@@ -180,15 +217,17 @@
 
                 <script>
 
-                function drawChart(data) {
+                function drawChart(trendsData) {
+
+                  data = trendsData.trendData
 
                   var chartLabels = []
                   var chartValues = []
 
                   for (var i = data.length - 1; i >= 0; i--) {
                     chartLabels[i] = data[i].name;
-                    chartValues[i] = data[i].value * -1;
-                    // chartValues[i] = data[i].value;
+                    // chartValues[i] = data[i].value * -1;
+                    chartValues[i] = data[i].value;
 
                   }
 
@@ -219,11 +258,154 @@
                       },
                       options: {}
                   });
+
+                  // -----------------------
+
+                  console.log("data: "+trendsData)
+
+                  allData = trendsData.allTrendData
+
+                  var veryPositiveValues = []
+                  var positiveValues = []
+                  var neutralValues = []
+                  var negativeValues = []
+                  var veryNegativeValues = []
+
+                  for (var i = allData.length - 1; i >= 0; i--) {
+
+                    var val1 = allData[i]["Very positive"];
+
+                    if (val1) {
+                      veryPositiveValues[i] = val1
+                    } else {
+                      veryPositiveValues[i] = 0
+                    }
+
+                    var val2 = allData[i]["Positive"];
+
+                    if (val2) {
+                      positiveValues[i] = val2
+                    } else {
+                      positiveValues[i] = 0
+                    }
+
+                    var val3 = allData[i]["Neutral"];
+
+                    if (val3) {
+                      neutralValues[i] = val3
+                    } else {
+                      neutralValues[i] = 0
+                    }
+
+                    var val4 = allData[i]["Negative"];
+
+                    if (val4) {
+                      negativeValues[i] = val4
+                    } else {
+                      negativeValues[i] = 0
+                    }
+
+                    var val5 = allData[i]["Very negative"];
+
+                    if (val5) {
+                      veryNegativeValues[i] = val5
+                    } else {
+                      veryNegativeValues[i] = 0
+                    }
+                    
+                  }
+
+                  $('#myChart2').replaceWith('<canvas id="myChart2" width="400" height="150"></canvas>');
+
+                  var ctx2 = document.getElementById("myChart2").getContext('2d');
+
+                  var myChart = new Chart(ctx2, {
+                      type: chartType,
+                      data: {
+                          labels: chartLabels,
+                          datasets: [
+                            {
+                                label: "very Positive",
+                                backgroundColor: '#248232',
+                                borderColor: '#1E6B29',
+                                data: veryPositiveValues,
+                            },
+                            {
+                                label: "Positive",
+                                backgroundColor: '#2BA84A',
+                                borderColor: '#207B36',
+                                data: positiveValues,
+                            },
+                            {
+                                label: "Neutral",
+                                backgroundColor: '#35A7FF',
+                                borderColor: '#2C89D1',
+                                data: neutralValues,
+                            },
+                            {
+                                label: "Negative",
+                                backgroundColor: '#941B0C',
+                                borderColor: '#941B0C',
+                                data: negativeValues,
+                            },
+                            {
+                                label: "Very Negative",
+                                backgroundColor: '#621708',
+                                borderColor: '#511307',
+                                data: veryNegativeValues,
+                            }
+                          ]
+                      },
+                      options: {}
+                  });
+
+                  function add(a, b) {
+                      return a + b;
+                  }
+
+                  var veryPositiveSum = veryPositiveValues.reduce(add, 0);
+                  var positiveSum = positiveValues.reduce(add, 0);
+                  var neutralSum = neutralValues.reduce(add, 0);
+                  var negativeSum = negativeValues.reduce(add, 0);
+                  var veryNegativeSum = veryNegativeValues.reduce(add, 0);
+
+                  $('#myChart3').replaceWith('<canvas id="myChart3" width="400" height="150"></canvas>');
+
+                  var ctx3 = document.getElementById("myChart3").getContext('2d');
+
+                  data = {
+                      "datasets":[
+                        {
+                          "label":"My First Dataset",
+                          "data":[veryPositiveSum,positiveSum,neutralSum,negativeSum,veryNegativeSum],
+                          "backgroundColor":[
+                            "rgb(255, 99, 132)",
+                            "rgb(54, 162, 235)",
+                            "rgb(255, 205, 86)",
+                            "rgb(255, 39, 132)",
+                            "rgb(255, 99, 32)"
+                          ]
+                        }
+                      ],
+
+                      "labels": [
+                          'Very Positive',
+                          'Positive',
+                          'Neutral',
+                          'Negative',
+                          'Very Negative'
+                      ]
+                  };
+
+                  var myPieChart = new Chart(ctx3,{
+                      type: 'doughnut',
+                      data: data,
+                      options: {}
+                  });
+
                 }
 
                 </script>
-
-                @adminfooter
 
                 <script type="text/javascript">
                 $(function() {
@@ -260,7 +442,7 @@
                               alert(result);              
                             }
                             else {        
-                              drawChart(result.trendData);      
+                              drawChart(result);      
                             }
                         }});
                     });
@@ -272,8 +454,9 @@
 
         <!-- Bootstrap -->
         <script src="@routes.Assets.at("js/bootstrap.min.js")" type="text/javascript"></script>
-        <!-- Morris.js charts -->
-        <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="@routes.Assets.at("js/plugins/daterangepicker/daterangepicker.js")" type="text/javascript"></script>
+
+        <script src="@routes.Assets.at("js/AdminLTE/app.js")" type="text/javascript"></script>
 
     </body>
 </html>

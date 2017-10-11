@@ -114,8 +114,8 @@ object UserManagerModel {
 
   def saveUserPrevilages(groupId : Int, datasourceId : String) : Int = DB.withConnection { implicit c =>
     val result = SQL("INSERT INTO userprevilages(groupid,datasource) VALUES ({groupId},{datasourceId})").on(
-        'groupId  -> groupId,
-        'datasourceId  -> datasourceId
+        'groupId  -> groupId.toInt,
+        'datasourceId  -> datasourceId.toInt
       ).executeUpdate()
     return result
   }

@@ -97,9 +97,12 @@ object AdminModel {
   
   }
   
-  
   def readAllDataSource : List[ConfigurationInfoList] = DB.withConnection { implicit c =>
     SQL("select * from tbldatasource").as (configuration *)
+  }
+
+  def readUserDataSource(groupid : Int) : List[ConfigurationInfoList] = DB.withConnection { implicit c =>
+    SQL("select * from tbldatasource where dsid in (select datasource from userPrevilages where groupid="+ groupid +")").as (configuration *)
   }
   
   def readSingleDataSource(dsid : Int) : List[ConfigurationInfoList] = DB.withConnection { implicit c =>

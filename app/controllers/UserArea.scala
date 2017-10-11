@@ -9,7 +9,13 @@ object UserArea extends Controller {
 
   def dashboard = Action{ implicit request =>
     if(checkSession(request)){      
-      val dataSource = AdminModel.readAllDataSource
+
+      val group = request.session.get("usergroup").get.toInt
+
+      Logger.info(group.toString)
+
+      // val dataSource = AdminModel.readAllDataSource
+      val dataSource = AdminModel.readUserDataSource(group)
       Ok(views.html.userheader("Dash Board",1,dataSource))
     }
     else{
@@ -17,7 +23,6 @@ object UserArea extends Controller {
         "error" -> "Your last session expired, Please Login again ")
     }
   }
-  
   
   def checkSession (req : Request[AnyContent]) : Boolean = {
     req.session.get("uid").map { user =>
